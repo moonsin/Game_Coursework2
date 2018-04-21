@@ -6,6 +6,7 @@ TagManager:
   tags:
   - blackbackground
   - Story
+  - moveRange
   layers:
   - Default
   - TransparentFX
