@@ -9,8 +9,11 @@ public class Player : MovingObject {
 	//Move
 
 	public bool alreadyMoved = false;
+	public bool alreadyAttacked = false;
+
 	private Vector3 clickPos;
 	public bool AttackRangeShowed = false;
+	public bool OwnTurn = false;
 
 
 	GameObject moveRangeHolder;
@@ -82,39 +85,49 @@ public class Player : MovingObject {
 
 	// Update is called once per frame
 	void Update () {
+		if (OwnTurn) {
 
-		clickPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 
-		if (Input.GetMouseButtonUp (0) && IsMouseOnMoveRange (clickPos)) {
+			if (Input.GetMouseButtonUp (0) && IsMouseOnMoveRange (clickPos)) {
 
-			Collider2D h = Physics2D.OverlapPoint (clickPos);
+				Collider2D h = Physics2D.OverlapPoint (clickPos);
 
-			deleteMoveRange ();
-			BoardManager.instance.floorMoveableArray [Convert.ToInt32 (ObjGridVec.y),Convert.ToInt32 (ObjGridVec.x)] = 1;
-			setBestPath(MovingObjTransFromIntoGridPos (h.transform.position));
+				deleteMoveRange ();
+				BoardManager.instance.floorMoveableArray [Convert.ToInt32 (ObjGridVec.y), Convert.ToInt32 (ObjGridVec.x)] = 1;
+				setBestPath (MovingObjTransFromIntoGridPos (h.transform.position));
 
-			ObjGridVec = MovingObjTransFromIntoGridPos (h.transform.position);
-			BoardManager.instance.floorMoveableArray [Convert.ToInt32 (ObjGridVec.y), Convert.ToInt32 (ObjGridVec.x)] = 0;
-			//setBestPath (new Vector3(6f,8f,0f));
-			movingToNum = bestPath.Count - 1;
-			MoveButton.instance.disable ();
+				ObjGridVec = MovingObjTransFromIntoGridPos (h.transform.position);
+				BoardManager.instance.floorMoveableArray [Convert.ToInt32 (ObjGridVec.y), Convert.ToInt32 (ObjGridVec.x)] = 0;
+				//setBestPath (new Vector3(6f,8f,0f));
+				movingToNum = bestPath.Count - 1;
+				MoveButton.instance.disable ();
+				alreadyMoved = true;
+			}
+
+			if (Input.GetMouseButtonUp (0) && IsMouseOnAttackRange (clickPos)) {
+
+				Collider2D h = Physics2D.OverlapPoint (clickPos);
+
+				deleteAttackRange ();
+				//print(AttackObjTransFromIntoGridPos (h.transform.position));
+				for (int i = 0; i < BoardManager.instance.fightEnemiesIndex.Length; i++) {
+					if (GameManager.instance.enemies [BoardManager.instance.fightEnemiesIndex [i]].ObjGridVec == AttackObjTransFromIntoGridPos (h.transform.position)) {
+
+						normalAttack (this.gameObject, GameManager.instance.enemies [BoardManager.instance.fightEnemiesIndex [i]].gameObject);
+						AttackButton.instance.disable ();
+						alreadyAttacked = true;
+
+					}
+				}
+			}
 		
 		}
 
-		if (Input.GetMouseButtonUp (0) && IsMouseOnAttackRange (clickPos)) {
-
-			Collider2D h = Physics2D.OverlapPoint (clickPos);
-
-			deleteAttackRange ();
-			//print(AttackObjTransFromIntoGridPos (h.transform.position));
-			for(int i = 0; i< BoardManager.instance.fightEnemiesIndex.Length;i++){
-				if(GameManager.instance.enemies[BoardManager.instance.fightEnemiesIndex[i]].ObjGridVec == AttackObjTransFromIntoGridPos (h.transform.position)){
-
-					normalAttack (this.gameObject, GameManager.instance.enemies [BoardManager.instance.fightEnemiesIndex [i]].gameObject);
-
-				}
-			}
-
+		if (alive && hp <= 0) {
+			alive = false;
+			animator.SetTrigger ("death");
+			Invoke ("deleteCharacter", 1.5f);
 		}
 
 

@@ -1,0 +1,146 @@
+
+divine_mage.png
+size: 1024,128
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm_l_1
+  rotate: true
+  xy: 188, 2
+  size: 42, 38
+  orig: 42, 38
+  offset: 0, 0
+  index: -1
+arm_l_2
+  rotate: true
+  xy: 820, 100
+  size: 26, 56
+  orig: 26, 56
+  offset: 0, 0
+  index: -1
+arm_l_3
+  rotate: false
+  xy: 358, 24
+  size: 20, 20
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+arm_r_1
+  rotate: true
+  xy: 590, 50
+  size: 20, 32
+  orig: 20, 32
+  offset: 0, 0
+  index: -1
+arm_r_2
+  rotate: false
+  xy: 878, 102
+  size: 44, 24
+  orig: 44, 24
+  offset: 0, 0
+  index: -1
+arm_r_3
+  rotate: false
+  xy: 924, 106
+  size: 26, 20
+  orig: 26, 20
+  offset: 0, 0
+  index: -1
+body
+  rotate: false
+  xy: 684, 66
+  size: 66, 60
+  orig: 66, 60
+  offset: 0, 0
+  index: -1
+buttock
+  rotate: true
+  xy: 590, 72
+  size: 54, 92
+  orig: 54, 92
+  offset: 0, 0
+  index: -1
+cloak
+  rotate: true
+  xy: 506, 48
+  size: 78, 82
+  orig: 78, 82
+  offset: 0, 0
+  index: -1
+eye_1
+  rotate: false
+  xy: 188, 46
+  size: 104, 80
+  orig: 104, 80
+  offset: 0, 0
+  index: -1
+eye_2
+  rotate: false
+  xy: 294, 46
+  size: 104, 80
+  orig: 104, 80
+  offset: 0, 0
+  index: -1
+hair_1
+  rotate: false
+  xy: 752, 86
+  size: 66, 40
+  orig: 66, 40
+  offset: 0, 0
+  index: -1
+head
+  rotate: false
+  xy: 400, 46
+  size: 104, 80
+  orig: 104, 80
+  offset: 0, 0
+  index: -1
+leg_l_1
+  rotate: false
+  xy: 298, 6
+  size: 28, 38
+  orig: 28, 38
+  offset: 0, 0
+  index: -1
+leg_l_2
+  rotate: false
+  xy: 228, 6
+  size: 36, 38
+  orig: 36, 38
+  offset: 0, 0
+  index: -1
+leg_l_3
+  rotate: false
+  xy: 752, 70
+  size: 26, 14
+  orig: 26, 14
+  offset: 0, 0
+  index: -1
+leg_r_1
+  rotate: false
+  xy: 266, 6
+  size: 30, 38
+  orig: 30, 38
+  offset: 0, 0
+  index: -1
+leg_r_2
+  rotate: false
+  xy: 328, 6
+  size: 28, 38
+  orig: 28, 38
+  offset: 0, 0
+  index: -1
+leg_r_3
+  rotate: false
+  xy: 2, 2
+  size: 28, 16
+  orig: 28, 16
+  offset: 0, 0
+  index: -1
+weapon
+  rotate: true
+  xy: 2, 20
+  size: 106, 184
+  orig: 106, 184
+  offset: 0, 0
+  index: -1

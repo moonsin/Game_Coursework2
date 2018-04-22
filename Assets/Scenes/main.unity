@@ -77,18 +77,15 @@ LightmapSettings:
     m_PVRDirectSampleCount: 32
     m_PVRSampleCount: 500
     m_PVRBounces: 2
-    m_PVRFilterTypeDirect: 0
-    m_PVRFilterTypeIndirect: 0
-    m_PVRFilterTypeAO: 0
+    m_PVRFiltering: 0
     m_PVRFilteringMode: 1
     m_PVRCulling: 1
     m_PVRFilteringGaussRadiusDirect: 1
     m_PVRFilteringGaussRadiusIndirect: 5
     m_PVRFilteringGaussRadiusAO: 2
-    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
-    m_PVRFilteringAtrousPositionSigmaIndirect: 2
-    m_PVRFilteringAtrousPositionSigmaAO: 1
-    m_ShowResolutionOverlay: 1
+    m_PVRFilteringAtrousColorSigma: 1
+    m_PVRFilteringAtrousNormalSigma: 1
+    m_PVRFilteringAtrousPositionSigma: 1
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -110,8 +107,6 @@ NavMeshSettings:
     manualTileSize: 0
     tileSize: 256
     accuratePlacement: 0
-    debug:
-      m_Flags: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1 &81383997
 GameObject:
@@ -671,11 +666,11 @@ Camera:
   m_TargetEye: 3
   m_HDR: 1
   m_AllowMSAA: 1
-  m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+  m_StereoMirrorMode: 0
 --- !u!4 &779936923
 Transform:
   m_ObjectHideFlags: 0
@@ -1258,6 +1253,7 @@ GameObject:
   - component: {fileID: 2010403301}
   - component: {fileID: 2010403302}
   - component: {fileID: 2010403303}
+  - component: {fileID: 2010403304}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1331,7 +1327,9 @@ MonoBehaviour:
   OrderNameText: {fileID: 1001521191003546, guid: a7c27df35b5e74c05a1d749b4156e057,
     type: 2}
   Players:
-  - {fileID: 1481181346001472, guid: 98fffb4491c5d422cad37af548947dc6, type: 2}
+  - {fileID: 1392192860370550, guid: 0d2c5d476cbd84b46a0710d23ddd8ac2, type: 2}
+  - {fileID: 1919814497670428, guid: d4d0f87b89ac07842a4d28f54da9be5b, type: 2}
+  - {fileID: 1045502353946958, guid: 744ddd27a0fafe244aee5ce7ec1fb398, type: 2}
   Enemies:
   - {fileID: 1625621362942742, guid: a6f039f7aeaae4ff39d3d763826231fa, type: 2}
   - {fileID: 1161764021552344, guid: a1e8f952739654931b26bf250840cb75, type: 2}
@@ -1340,12 +1338,28 @@ MonoBehaviour:
   fightOrderArray: []
   CharacterOrderController: 0
   MoveToNextCharacter: 0
+  allEnemiesdied: 0
   firstFloorTiles:
   - {fileID: 1942828989668894, guid: ec52ef3c68a2448d2a1c50b5f849f97a, type: 2}
   - {fileID: 1339647460306090, guid: 4826b8fcb712d4ee9ac49d5350677bd2, type: 2}
   - {fileID: 1660381110551450, guid: 513e8d7e5a7b94f488c8222cecd01bf7, type: 2}
   - {fileID: 1338399944294956, guid: b70b72eb2f45b49978e48519983ef612, type: 2}
   - {fileID: 1053310698630930, guid: 2d5433311148f4d9aada148829b35212, type: 2}
+  secondFloorTiles:
+  - {fileID: 1422031216030106, guid: 105b39075dfc0db408f573a4c694bbfb, type: 2}
+  - {fileID: 1979844162756800, guid: c076d9af79004f8439e74005063077bd, type: 2}
+  - {fileID: 1827338648838382, guid: e884ff7d191c23a41b4410a9ac52a2b7, type: 2}
+--- !u!114 &2010403304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2010403298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3adcfefccbdf4584993c1927bbe42e87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2075167917
 GameObject:
   m_ObjectHideFlags: 0

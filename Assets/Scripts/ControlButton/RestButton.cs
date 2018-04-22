@@ -22,7 +22,9 @@ public class RestButton : ControlButton {
 
 		if (!disabled) {
 			player = BoardManager.instance.fightOrderArray[BoardManager.instance.CharacterOrderController].GetComponent<Player>();
+			player.OwnTurn = false;
 			player.deleteMoveRange ();
+			player.deleteAttackRange ();
 			BoardManager.instance.allButtonDisabled();
 			BoardManager.instance.MoveToNextCharacter = true;
 		} 

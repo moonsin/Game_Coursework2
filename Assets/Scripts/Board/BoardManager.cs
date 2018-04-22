@@ -36,6 +36,7 @@ public class BoardManager : MonoBehaviour {
 
 	public int CharacterOrderController = 0;
 	public bool MoveToNextCharacter = false;
+	public bool allEnemiesdied = false;
 
 
 	public Vector3 TransFromWorldToISO(Vector3 vec){
@@ -47,7 +48,7 @@ public class BoardManager : MonoBehaviour {
 		return newVec;
 	}
 
-	protected void setFloor(GameObject toInstantiate, int LayerOrder, int x, int y, int adjustPos){
+	protected void setFloor(GameObject toInstantiate, int LayerOrder, int x, int y, int adjustPos, int floorNumber){
 
 
 		//adjustPos == 2 表示变高一半
@@ -80,10 +81,12 @@ public class BoardManager : MonoBehaviour {
 		} else if (adjustPos == 8){
 			ISOVec.y += 1.5f;
 		}else {
+			//随机高或低，增加立体感 Random.value (0-1)
 			ISOVec.y += 0.2f * Random.value;
 		}
 
-		//随机高或低，增加立体感 Random.value (0-1)
+		//渲染不同层
+		ISOVec.y += floorNumber *20f;
 
 
 		GameObject instance =
@@ -96,26 +99,26 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	//type = 0 player, type = 1 enemy
-	protected void setCharacters(int[,] Pos, int[] index, int type){
-		GameObject[] character;
+	protected void setCharacters(int[,] Pos, GameObject[] characters, int type){
+		//GameObject[] character;
 		Transform Holder;
 
 		if (type == 0) {
-			character = Players ;
+			//character = Players ;
 			Holder = playersHolder;
 		} else {
-			character = Enemies ;
+			//character = Enemies ;
 			Holder = enemiesHolder;
 
 		}
 
-		for (int i = 0; i < index.Length; i++) {
-			rendeCharacter (Pos [index[i], 0], Pos [index[i], 1], character[index[i]], Holder, type);
-			floorMoveableArray [Pos [index[i], 1], Pos [index[i], 0]] = 0;
+		for (int i = 0; i < characters.Length; i++) {
+			rendeCharacter (Pos [i, 0], Pos [i, 1], characters[i], Holder, type);
+			floorMoveableArray [Pos [i, 1], Pos [i, 0]] = 0;
 			if (type == 0) {
-				character [index [i]].GetComponent<Player> ().ObjGridVec = new Vector3(Pos[i,0],Pos [i, 1],0);
+				characters [i].GetComponent<Player> ().ObjGridVec = new Vector3(Pos[i,0],Pos [i, 1],0);
 			} else {
-				character [index [i]].GetComponent<Enemy> ().ObjGridVec = new Vector3(Pos[i,0],Pos [i, 1],0);
+				characters [i].GetComponent<Enemy> ().ObjGridVec = new Vector3(Pos[i,0],Pos [i, 1],0);
 			}
 		}
 
@@ -127,7 +130,7 @@ public class BoardManager : MonoBehaviour {
 	protected void rendeCharacter(int x, int y, GameObject character, Transform Holder, int type){
 		Vector3 newVec = new Vector3();
 		newVec.x = x + y;
-		if (type == 0) {
+		if (type == 3) {
 			newVec.y = TilesInstance [x, y].transform.position.y + 1.3f;
 			character.GetComponent<SpriteRenderer> ().sortingOrder = TilesInstance [x,y].GetComponent<SpriteRenderer> ().sortingOrder + 1;
 		} else {
@@ -242,9 +245,31 @@ public class BoardManager : MonoBehaviour {
 		}
 	}
 
+	public void checkAllenemieDied(){
+		bool result = true;
+
+		for (int i = 0; i < GameManager.instance.enemies.Count; i++) {
+			if (GameManager.instance.enemies [i] != null) {
+				result = false;
+			}
+		}
+		allEnemiesdied = result;
+	}
+
+	protected void initBoard(){
+		GameObject[] orderNames;
+		GameManager.instance.players = new List<Player> ();
+		GameManager.instance.enemies = new List<Enemy> ();
+		orderNames = GameObject.FindGameObjectsWithTag ("orderInName");
+		for (int i = 0; i < orderNames.Length; i++) {
+			Destroy (orderNames [i]);
+		}
+
+	}
+
 	// Update is called once per frame
 	protected void Update () {
-		print (fightOrderArray[0]);
+		
 		if (MoveToNextCharacter) {
 			MoveToNextCharacter = false;
 
@@ -265,6 +290,9 @@ public class BoardManager : MonoBehaviour {
 			GameObject.FindGameObjectsWithTag ("orderInName")[CharacterOrderController].GetComponent<Text>().color = Color.yellow;
 
 			if (fightOrderArray [CharacterOrderController].tag == "Player") {
+				fightOrderArray [CharacterOrderController].GetComponent<Player> ().OwnTurn = true;
+				fightOrderArray [CharacterOrderController].GetComponent<Player> ().alreadyMoved = false;
+				fightOrderArray [CharacterOrderController].GetComponent<Player> ().alreadyAttacked = false;
 				allButtonEnabled ();
 			} else {
 				fightOrderArray [CharacterOrderController].GetComponent<Enemy> ().run ();

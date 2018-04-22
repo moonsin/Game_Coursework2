@@ -1,0 +1,230 @@
+
+knight_male.png
+size: 1024,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+arm_l_1
+  rotate: false
+  xy: 2, 2
+  size: 38, 50
+  orig: 38, 50
+  offset: 0, 0
+  index: -1
+arm_l_2
+  rotate: false
+  xy: 511, 243
+  size: 16, 38
+  orig: 16, 38
+  offset: 0, 0
+  index: -1
+arm_l_3
+  rotate: false
+  xy: 899, 191
+  size: 28, 44
+  orig: 28, 44
+  offset: 0, 0
+  index: -1
+arm_r_1
+  rotate: false
+  xy: 996, 301
+  size: 26, 44
+  orig: 26, 44
+  offset: 0, 0
+  index: -1
+arm_r_2
+  rotate: false
+  xy: 100, 22
+  size: 34, 30
+  orig: 34, 30
+  offset: 0, 0
+  index: -1
+arm_r_3
+  rotate: false
+  xy: 554, 21
+  size: 38, 36
+  orig: 38, 36
+  offset: 0, 0
+  index: -1
+body_1
+  rotate: false
+  xy: 554, 59
+  size: 58, 74
+  orig: 58, 74
+  offset: 0, 0
+  index: -1
+buttock
+  rotate: false
+  xy: 42, 14
+  size: 56, 38
+  orig: 56, 38
+  offset: 0, 0
+  index: -1
+hair_1
+  rotate: true
+  xy: 266, 2
+  size: 114, 94
+  orig: 114, 94
+  offset: 0, 0
+  index: -1
+hair_2
+  rotate: true
+  xy: 362, 2
+  size: 114, 94
+  orig: 114, 94
+  offset: 0, 0
+  index: -1
+hair_3
+  rotate: true
+  xy: 458, 2
+  size: 114, 94
+  orig: 114, 94
+  offset: 0, 0
+  index: -1
+head_1
+  rotate: false
+  xy: 930, 249
+  size: 64, 96
+  orig: 64, 96
+  offset: 0, 0
+  index: -1
+head_2
+  rotate: true
+  xy: 801, 171
+  size: 64, 96
+  orig: 64, 96
+  offset: 0, 0
+  index: -1
+hit_defensive_1
+  rotate: true
+  xy: 530, 347
+  size: 163, 243
+  orig: 163, 243
+  offset: 0, 0
+  index: -1
+hit_defensive_2
+  rotate: true
+  xy: 775, 347
+  size: 163, 243
+  orig: 163, 243
+  offset: 0, 0
+  index: -1
+hit_defensive_3
+  rotate: true
+  xy: 266, 118
+  size: 163, 243
+  orig: 163, 243
+  offset: 0, 0
+  index: -1
+leg_l_1
+  rotate: false
+  xy: 996, 261
+  size: 24, 38
+  orig: 24, 38
+  offset: 0, 0
+  index: -1
+leg_l_2
+  rotate: false
+  xy: 614, 59
+  size: 28, 36
+  orig: 28, 36
+  offset: 0, 0
+  index: -1
+leg_l_3
+  rotate: false
+  xy: 511, 119
+  size: 28, 14
+  orig: 28, 14
+  offset: 0, 0
+  index: -1
+leg_r_1
+  rotate: false
+  xy: 614, 97
+  size: 38, 36
+  orig: 38, 36
+  offset: 0, 0
+  index: -1
+leg_r_2
+  rotate: true
+  xy: 136, 28
+  size: 24, 32
+  orig: 24, 32
+  offset: 0, 0
+  index: -1
+leg_r_3
+  rotate: false
+  xy: 675, 141
+  size: 30, 14
+  orig: 30, 14
+  offset: 0, 0
+  index: -1
+shield
+  rotate: true
+  xy: 675, 157
+  size: 78, 124
+  orig: 78, 124
+  offset: 0, 0
+  index: -1
+shoulder
+  rotate: false
+  xy: 594, 29
+  size: 32, 28
+  orig: 32, 28
+  offset: 0, 0
+  index: -1
+skill_1_1
+  rotate: false
+  xy: 2, 283
+  size: 262, 227
+  orig: 262, 227
+  offset: 0, 0
+  index: -1
+skill_1_2
+  rotate: false
+  xy: 2, 54
+  size: 262, 227
+  orig: 262, 227
+  offset: 0, 0
+  index: -1
+skill_1_3
+  rotate: false
+  xy: 266, 283
+  size: 262, 227
+  orig: 262, 227
+  offset: 0, 0
+  index: -1
+skill_2_1
+  rotate: false
+  xy: 530, 292
+  size: 198, 53
+  orig: 198, 53
+  offset: 0, 0
+  index: -1
+skill_2_2
+  rotate: false
+  xy: 730, 292
+  size: 198, 53
+  orig: 198, 53
+  offset: 0, 0
+  index: -1
+skill_2_3
+  rotate: false
+  xy: 530, 237
+  size: 198, 53
+  orig: 198, 53
+  offset: 0, 0
+  index: -1
+skill_2_4
+  rotate: false
+  xy: 730, 237
+  size: 198, 53
+  orig: 198, 53
+  offset: 0, 0
+  index: -1
+weapon
+  rotate: true
+  xy: 511, 135
+  size: 100, 162
+  orig: 100, 162
+  offset: 0, 0
+  index: -1

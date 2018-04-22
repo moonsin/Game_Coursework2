@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 222000718090774156}
   - component: {fileID: 114900945871641676}
   m_Layer: 5
-  m_Name: zombie2(Clone)
+  m_Name: Cleric(Clone)
   m_TagString: orderInName
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +60,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: zombie2
+  m_Text: Cleric
 --- !u!222 &222000718090774156
 CanvasRenderer:
   m_ObjectHideFlags: 1

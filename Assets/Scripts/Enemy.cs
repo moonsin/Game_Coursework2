@@ -9,7 +9,7 @@ public class Enemy : MovingObject {
 
 	private Vector3 target;
 	private Vector3 BestPlace;
-	private bool alive = true;
+	private Player PlayerTarget;
 
 	// Use this for initialization
 	void Awake () {
@@ -18,14 +18,25 @@ public class Enemy : MovingObject {
 
 	}
 
+	private void delayAttack(){
+		PlayerTarget = isNearPlayer ();
+		if (PlayerTarget != null) {
+			normalAttack (this.gameObject, PlayerTarget.gameObject);
+		}
+	}
+
 	public void run(){
-		//target = isNearPlayer ();
+		PlayerTarget = isNearPlayer ();
 
-		//if (target == null) {
+		if (PlayerTarget == null) {
 			MoveEnemy ();
-		//}
+			Invoke ("delayAttack", 1f);
 
-		Invoke ("turnOver", 1f);
+		} else {
+			normalAttack (this.gameObject, PlayerTarget.gameObject);
+		}
+
+		Invoke ("turnOver", 1.5f);
 	}
 
 	private void turnOver(){
@@ -82,21 +93,34 @@ public class Enemy : MovingObject {
 		return target;
 	}
 
-	private void deleteEnemy(){
-		BoardManager.instance.floorMoveableArray[Convert.ToInt32 (ObjGridVec.y),Convert.ToInt32 (ObjGridVec.x)] = 1;
-		int i = 0;
-		for (; BoardManager.instance.fightOrderArray [i] != this.gameObject; i++);
-		GameObject.FindGameObjectsWithTag ("orderInName")[i].GetComponent<Text>().color = Color.grey;
-		Destroy (this.gameObject);
+	private Player isNearPlayer(){
+		Player nearPlayerTarget = new Player();
+		setAttackRange(Convert.ToInt32(ObjGridVec.x),Convert.ToInt32(ObjGridVec.y));
+		//RendeAttackRange (AttackRange);
+
+		for (int i = 0; i < AttackRange.Count; i++) {
+			//AttackObjTransFromIntoGridPos (h.transform.position)
+			for(int i2 = 0; i2< GameManager.instance.players.Count; i2++){
+				if (AttackRange [i] == GameManager.instance.players [i2].ObjGridVec) {
+					nearPlayerTarget = GameManager.instance.players [i2];
+				}
+			}
+		}
+
+		return nearPlayerTarget;
+
 	}
+
+
  	
 	// Update is called once per frame
 	void Update () {
 
 		if (alive && hp <= 0) {
+			BoardManager.instance.allButtonDisabled ();
 			alive = false;
 			animator.SetTrigger ("death");
-			Invoke ("deleteEnemy", 1.5f);
+			Invoke ("deleteCharacter", 1.5f);
 		}
 
 		base.Update ();

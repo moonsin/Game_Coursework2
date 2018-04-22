@@ -27,6 +27,7 @@ public class MoveButton : ControlButton {
 
 		if (!disabled) {
 			player = BoardManager.instance.fightOrderArray[BoardManager.instance.CharacterOrderController].GetComponent<Player>();
+			player.deleteAttackRange ();
 			if (!player.MoveRangeShowed) {
 				player.showMoveRange ();
 				player.MoveRangeShowed = true;

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Linq;
 
@@ -16,6 +17,7 @@ public class MovingObject : MonoBehaviour {
 	public int manaPoint;
 	public int skillPoint;
 	public int FirstAttackPoint;
+	protected bool alive = true;
 
 	public Vector3 ObjGridVec; //网格上的位置
 
@@ -30,6 +32,7 @@ public class MovingObject : MonoBehaviour {
 	protected int movingToNum;
 	public bool MoveRangeShowed = false;
 	//public bool moving = false;
+	//public bool moveFinished = false;
 
 	protected List<Vector3> AttackRange = new List<Vector3> ();
 	public GameObject attackRangeTile;
@@ -275,7 +278,7 @@ public class MovingObject : MonoBehaviour {
 		int x = Convert.ToInt32 (newPos.x);
 		int y = Convert.ToInt32 (newPos.y);
 		realPos.x = x + y;
-		if (this.tag == "Player") {
+		if (this.tag == "PlayerOwn") {
 			realPos.y = BoardManager.instance.TilesInstance [x, y].transform.position.y + 1.3f;
 		} else {
 			realPos.y = BoardManager.instance.TilesInstance [x, y].transform.position.y + 0.7f;
@@ -289,18 +292,22 @@ public class MovingObject : MonoBehaviour {
 		
 		setMoveAnimate ();
 		float step = speed * Time.deltaTime;
+		if (MovingObjTransFromIntoWorldPos (newPos).x < this.transform.position.x) {
+			this.transform.rotation = Quaternion.Euler(0, 180, 0);
+		} else {
+			this.transform.rotation = Quaternion.Euler(0, 0, 0);
+		}
 		this.transform.position = Vector3.MoveTowards (this.transform.position, MovingObjTransFromIntoWorldPos(newPos), step);
-	
 	}
 
 	protected void setMoveAnimate(){
-		if (this.tag == "Enemy") {
+		if (this.tag != "PlayerOwn") {
 			animator.SetTrigger ("run");
 		}
 	}
 
 	protected void stopMoveAnimate(){
-		if (this.tag == "Enemy") {
+		if (this.tag != "PlayerOwn") {
 			animator.ResetTrigger ("run");
 			animator.SetTrigger ("idle_1");
 
@@ -348,26 +355,63 @@ public class MovingObject : MonoBehaviour {
 	}
 
 	public void normalAttack(GameObject attacker, GameObject defender){
+		
+		setAttackAnimate (attacker);
+
 		int damage = 0;
-		setHitAnimate (defender);
 		if (attacker.tag == "Player") {
 			damage = attacker.GetComponent<Player> ().attackPoint - defender.GetComponent<Enemy> ().defendPoint;
 			if (damage < 0) {
 				damage = 0;
 			}
-			defender.GetComponent<Enemy> ().hp -= damage;
+
+			defender.GetComponent<Enemy> ().hit (damage);
+		
 		} else {
 			damage = attacker.GetComponent<Enemy> ().attackPoint - defender.GetComponent<Player> ().defendPoint;
+			if (damage < 0) {
+				damage = 0;
+			}
+			defender.GetComponent<Player> ().hit (damage);
 		}
 			
 	}
 
 	protected void setHitAnimate(GameObject defender){
-		if (defender.tag == "Enemy") {
+		if (defender.tag != "PlayerOwn") {
 			defender.GetComponent<Animator>().SetTrigger ("hit_1");
 		}
 	}
 
+	protected void setAttackAnimate(GameObject attacker){
+		if (attacker.tag != "PlayerOwn") {
+			attacker.GetComponent<Animator>().SetTrigger ("skill_1");
+		}
+	}
+
+	protected void hit(int damage){
+		setHitAnimate (this.gameObject);
+		this.hp -= damage;
+	}
+
+	private void deleteCharacter(){
+		BoardManager.instance.floorMoveableArray[Convert.ToInt32 (ObjGridVec.y),Convert.ToInt32 (ObjGridVec.x)] = 1;
+		int i = 0;
+		for (; BoardManager.instance.fightOrderArray [i] != this.gameObject; i++);
+		GameObject.FindGameObjectsWithTag ("orderInName")[i].GetComponent<Text>().color = Color.grey;
+		Destroy (this.gameObject);
+
+		if (this.gameObject.tag == "Enemy") {
+			BoardManager.instance.allButtonEnabled ();
+			if (BoardManager.instance.fightOrderArray [BoardManager.instance.CharacterOrderController].GetComponent<Player> ().alreadyMoved) {
+				MoveButton.instance.disable ();
+			}
+			if (BoardManager.instance.fightOrderArray [BoardManager.instance.CharacterOrderController].GetComponent<Player> ().alreadyAttacked) {
+				AttackButton.instance.disable ();
+			}
+		}
+			
+	}
 
 	// Update is called once per frame
 	protected void Update () {
@@ -378,7 +422,7 @@ public class MovingObject : MonoBehaviour {
 				if (this.transform.position.y > MovingObjTransFromIntoWorldPos (bestPath [i]).y ||(
 					this.transform.position.y == MovingObjTransFromIntoWorldPos (bestPath [i]).y && this.transform.position.x < MovingObjTransFromIntoWorldPos (bestPath [i]).x
 				)) {
-					if (this.tag == "Player") {
+					if (this.tag == "PlayerOwn") {
 						this.GetComponent<SpriteRenderer> ().sortingOrder = BoardManager.instance.TilesInstance [Convert.ToInt32 (bestPath [i].x), Convert.ToInt32 ((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
 					} else {
 						this.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingOrder = BoardManager.instance.TilesInstance [Convert.ToInt32 (bestPath [i].x), Convert.ToInt32 ((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
@@ -388,7 +432,7 @@ public class MovingObject : MonoBehaviour {
 				move (bestPath [i]);
 			}else if (Vector3.Distance (this.transform.position, MovingObjTransFromIntoWorldPos(bestPath [i])) <= float.Epsilon && movingToNum == i){
 				movingToNum -= 1;
-				if(this.tag == "Player"){
+				if(this.tag == "PlayerOwn"){
 					this.GetComponent<SpriteRenderer> ().sortingOrder = BoardManager.instance.TilesInstance[Convert.ToInt32(bestPath [i].x), Convert.ToInt32((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
 				}else{
 					this.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingOrder = BoardManager.instance.TilesInstance[Convert.ToInt32(bestPath [i].x), Convert.ToInt32((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
@@ -398,10 +442,10 @@ public class MovingObject : MonoBehaviour {
 		}
 
 		if (movingToNum == -1) {
-			
 			movingToNum -= 1;
 			stopMoveAnimate ();
 		}
+
 
 	}
 
