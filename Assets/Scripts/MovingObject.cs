@@ -11,9 +11,11 @@ public class MovingObject : MonoBehaviour {
 	public int defendPoint;
 	public int hp;
 	public int MovingPoint;
+	public int AttackDisPoint;
 	public int speed = 4;
 	public int manaPoint;
 	public int skillPoint;
+	public int FirstAttackPoint;
 
 	public Vector3 ObjGridVec; //网格上的位置
 
@@ -22,15 +24,26 @@ public class MovingObject : MonoBehaviour {
 	protected int[] bestPathArray;
 	protected int[] dis;
 	protected Transform rangeHolder;
-	private float FarPosValue = 1000f;
+	protected float FarPosValue = 1000f;
 	public GameObject moveRangeTile;
 	protected List<Vector3> bestPath = new List<Vector3> ();
+	protected int movingToNum;
+	public bool MoveRangeShowed = false;
+	//public bool moving = false;
+
+	protected List<Vector3> AttackRange = new List<Vector3> ();
+	public GameObject attackRangeTile;
+
+	public Animator animator; 
+
 
 	// Use this for initialization
-	void Awake () {
+	protected void Awake () {
 		
-		MovingPoint = (int)Mathf.Floor ((float)Dexterity / 2f);
-	
+		this.MovingPoint = (int)Mathf.Floor ((float)Dexterity / 2f);
+		this.FirstAttackPoint = (int)Mathf.Floor (UnityEngine.Random.value* 20 + Dexterity);
+		animator = GetComponent<Animator>();
+
 	}
 
 	private void setPathArrayByPos(Vector3 pos, int i){
@@ -64,8 +77,6 @@ public class MovingObject : MonoBehaviour {
 
 		MoveRange.Add(new Vector3 (x, y, -0f));
 
-		//print (BoardManager.instance.floorMoveableArray [8, 16]);
-
 		for (int i = 0; i <= MovingPoint; i++) {
 			if (i == 0) {
 				for (int i2 = -MovingPoint; i2 <= MovingPoint; i2++) {
@@ -79,14 +90,15 @@ public class MovingObject : MonoBehaviour {
 				}
 			}else {
 				for (int i2 = -MovingPoint+i; i2 <= MovingPoint-i; i2++) {
-					if (x + i2 < BoardManager.instance.columns && y + i < BoardManager.instance.rows) {
+					if (x + i2 < BoardManager.instance.columns && y + i < BoardManager.instance.rows && x+i2 >=0 && y+i >=0) {
+						
 						if (BoardManager.instance.floorMoveableArray [y + i,x + i2] != 0) {
 							newMovePos = new Vector3 (x + i2, y + i, -0f);
 							MoveRange.Add (newMovePos);
 						}
 					}
 
-					if (x + i2 < BoardManager.instance.columns && y - i > -1) {
+					if (x + i2 < BoardManager.instance.columns && y - i > -1 && x + i2 >=0 ) {
 						if (BoardManager.instance.floorMoveableArray [y - i,x + i2] != 0) {
 							newMovePos = new Vector3 (x + i2, y - i, -0f);
 							MoveRange.Add (newMovePos);
@@ -184,6 +196,8 @@ public class MovingObject : MonoBehaviour {
 
 			if (Type == "move") {
 				toInstantiate = moveRangeTile;
+			} else if(Type == "attack") {
+				toInstantiate = attackRangeTile;
 			}
 
 			toInstantiate.GetComponent<SpriteRenderer> ().sortingOrder = BoardManager.instance.TilesInstance[x, y].GetComponent<SpriteRenderer> ().sortingOrder + 1;
@@ -202,6 +216,13 @@ public class MovingObject : MonoBehaviour {
 		rangeHolder = new GameObject ("moveRange").transform;
 		foreach (Vector3 pos in MoveRange) {
 			setSingleRange (Convert.ToInt32(pos.x),Convert.ToInt32(pos.y), "move", moveRangeTile);
+		}
+	}
+
+	protected void RendeAttackRange(List<Vector3> AttackRange){
+		rangeHolder = new GameObject ("attackRange").transform;
+		foreach (Vector3 pos in AttackRange) {
+			setSingleRange (Convert.ToInt32(pos.x),Convert.ToInt32(pos.y), "attack", attackRangeTile);
 		}
 	}
 
@@ -232,6 +253,20 @@ public class MovingObject : MonoBehaviour {
 		return newPos;
 	}
 
+	protected Vector3 AttackObjTransFromIntoGridPos(Vector3 Pos){
+		Vector3 newPos = new Vector3();
+
+		foreach(Vector3 vec in AttackRange){
+			if (vec.x != FarPosValue) {
+				if (RangeTransFromIntoWorldPos (vec) == Pos) {
+					newPos = vec;
+				}
+			}
+		}
+
+		return newPos;
+	}
+
 	protected Vector3 MovingObjTransFromIntoWorldPos(Vector3 newPos){
 
 
@@ -240,21 +275,134 @@ public class MovingObject : MonoBehaviour {
 		int x = Convert.ToInt32 (newPos.x);
 		int y = Convert.ToInt32 (newPos.y);
 		realPos.x = x + y;
-		realPos.y = BoardManager.instance.TilesInstance [x, y].transform.position.y + 1.3f;
+		if (this.tag == "Player") {
+			realPos.y = BoardManager.instance.TilesInstance [x, y].transform.position.y + 1.3f;
+		} else {
+			realPos.y = BoardManager.instance.TilesInstance [x, y].transform.position.y + 0.7f;
+		}
 
 		return realPos;
 
 	}
 
 	protected void move(Vector3 newPos){
-
+		
+		setMoveAnimate ();
 		float step = speed * Time.deltaTime;
 		this.transform.position = Vector3.MoveTowards (this.transform.position, MovingObjTransFromIntoWorldPos(newPos), step);
+	
 	}
 
+	protected void setMoveAnimate(){
+		if (this.tag == "Enemy") {
+			animator.SetTrigger ("run");
+		}
+	}
+
+	protected void stopMoveAnimate(){
+		if (this.tag == "Enemy") {
+			animator.ResetTrigger ("run");
+			animator.SetTrigger ("idle_1");
+
+		}
+	}
+
+
+	protected void setAttackRange(int x, int y){
+		Vector3 newMovePos;
+		AttackRange.Clear ();
+
+		//AttackRange.Add(new Vector3 (x, y, -0f));
+
+		for (int i = 0; i <= AttackDisPoint; i++) {
+			if (i == 0) {
+				for (int i2 = -AttackDisPoint; i2 <= AttackDisPoint; i2++) {
+					if (x + i2 < BoardManager.instance.columns && y + i < BoardManager.instance.rows && x +i2 >=0) {
+						if (BoardManager.instance.floorAttackAbleArray [y + i,x + i2] != 0) {
+							newMovePos = new Vector3 (x + i2, y + i, 0f);
+							AttackRange.Add (newMovePos);
+						}
+					}
+
+				}
+			}else {
+				for (int i2 = -AttackDisPoint+i; i2 <= AttackDisPoint-i; i2++) {
+					if (x + i2 < BoardManager.instance.columns && y + i < BoardManager.instance.rows && x+i2 >=0 && y+i >=0) {
+
+						if (BoardManager.instance.floorAttackAbleArray [y + i,x + i2] != 0) {
+							newMovePos = new Vector3 (x + i2, y + i, -0f);
+							AttackRange.Add (newMovePos);
+						}
+					}
+
+					if (x + i2 < BoardManager.instance.columns && y - i > -1 && x + i2 >=0 ) {
+						if (BoardManager.instance.floorAttackAbleArray [y - i,x + i2] != 0) {
+							newMovePos = new Vector3 (x + i2, y - i, -0f);
+							AttackRange.Add (newMovePos);
+						}
+					}
+
+				}
+			}
+		}
+	}
+
+	public void normalAttack(GameObject attacker, GameObject defender){
+		int damage = 0;
+		setHitAnimate (defender);
+		if (attacker.tag == "Player") {
+			damage = attacker.GetComponent<Player> ().attackPoint - defender.GetComponent<Enemy> ().defendPoint;
+			if (damage < 0) {
+				damage = 0;
+			}
+			defender.GetComponent<Enemy> ().hp -= damage;
+		} else {
+			damage = attacker.GetComponent<Enemy> ().attackPoint - defender.GetComponent<Player> ().defendPoint;
+		}
+			
+	}
+
+	protected void setHitAnimate(GameObject defender){
+		if (defender.tag == "Enemy") {
+			defender.GetComponent<Animator>().SetTrigger ("hit_1");
+		}
+	}
+
+
 	// Update is called once per frame
-	void Update () {
-		
+	protected void Update () {
+
+		for (int i = bestPath.Count - 1; i >= 0; i--) {
+			if (Vector3.Distance (this.transform.position, MovingObjTransFromIntoWorldPos(bestPath [i])) >= float.Epsilon && movingToNum == i) {
+				//如果向近的地方移动就先增加order，远的地方就后改变
+				if (this.transform.position.y > MovingObjTransFromIntoWorldPos (bestPath [i]).y ||(
+					this.transform.position.y == MovingObjTransFromIntoWorldPos (bestPath [i]).y && this.transform.position.x < MovingObjTransFromIntoWorldPos (bestPath [i]).x
+				)) {
+					if (this.tag == "Player") {
+						this.GetComponent<SpriteRenderer> ().sortingOrder = BoardManager.instance.TilesInstance [Convert.ToInt32 (bestPath [i].x), Convert.ToInt32 ((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
+					} else {
+						this.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingOrder = BoardManager.instance.TilesInstance [Convert.ToInt32 (bestPath [i].x), Convert.ToInt32 ((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
+					}
+				}
+
+				move (bestPath [i]);
+			}else if (Vector3.Distance (this.transform.position, MovingObjTransFromIntoWorldPos(bestPath [i])) <= float.Epsilon && movingToNum == i){
+				movingToNum -= 1;
+				if(this.tag == "Player"){
+					this.GetComponent<SpriteRenderer> ().sortingOrder = BoardManager.instance.TilesInstance[Convert.ToInt32(bestPath [i].x), Convert.ToInt32((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
+				}else{
+					this.GetComponent<UnityEngine.Rendering.SortingGroup>().sortingOrder = BoardManager.instance.TilesInstance[Convert.ToInt32(bestPath [i].x), Convert.ToInt32((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
+				}
+
+			}
+		}
+
+		if (movingToNum == -1) {
+			
+			movingToNum -= 1;
+			stopMoveAnimate ();
+		}
+
 	}
 
 

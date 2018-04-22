@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
 	public List<Player> players;
 	public List<Enemy> enemies;
 
-	public int onMovePlayerIndex = 0;
+
 
 	void Awake(){
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TowerFightBoardManager : BoardManager {
 
@@ -28,8 +29,9 @@ public class TowerFightBoardManager : BoardManager {
 		{2,8,0,0,0,0,0,0},
 		{6,2,4,6,2,2,4,6}
 	};
+
 	int[] firstFloorPlayers = new int[]{0};
-	int[] firstFloorEnemies = new int[]{0};	
+	int[] firstFloorEnemies = new int[]{0,1};	
 
 
 	// Use this for initialization
@@ -45,11 +47,17 @@ public class TowerFightBoardManager : BoardManager {
 		TilesInstance = new GameObject[8, 8];
 
 		playersPos = new int[1, 2]{ {7, 4}};
-		enemiesPos = new int[1, 2]{ {1, 4}};
+		enemiesPos = new int[2, 2]{ {1, 4},{1,5}};
 
 		floorMoveableArray = new int[8, 8];
+		floorAttackAbleArray = new int[8, 8];
 
 		initFloorMoveableArray ();
+		initFloorAttackAbleArray ();
+
+		fightPlayersIndex = firstFloorPlayers;
+		fightEnemiesIndex = firstFloorEnemies;
+
 		base.Awake ();
 	}
 
@@ -65,6 +73,18 @@ public class TowerFightBoardManager : BoardManager {
 		}
 	}
 
+	private void initFloorAttackAbleArray(){
+		for (int y = 0; y < rows; y++) {
+			for (int x = 0; x < columns; x++) {
+				if (firstFloorHeightMap [y, x] == 0) {
+					floorAttackAbleArray [y, x] = 1;
+				} else {
+					floorAttackAbleArray [y, x] = 0;
+				}
+			}
+		}
+	}
+
 
 		
 
@@ -73,7 +93,7 @@ public class TowerFightBoardManager : BoardManager {
 		firstFloorSetup ();
 		setCharacters (playersPos,firstFloorPlayers,0);
 		setCharacters (enemiesPos,firstFloorEnemies,1);
-	
+
 	}
 
 	private void firstFloorSetup (){
@@ -92,8 +112,25 @@ public class TowerFightBoardManager : BoardManager {
 			
 	}
 
+
+
 	// Update is called once per frame
 	void Update () {
 		
+		if (setCharactersFinished) {
+			setCharactersFinished = false;
+			initOrderArray ();
+			initOrderNames ();
+
+
+			if (fightOrderArray [0].tag == "Player") {
+				allButtonEnabled ();
+			} else {
+				allButtonDisabled ();
+				fightOrderArray [0].GetComponent<Enemy> ().run ();
+			}
+		}
+
+		base.Update ();
 	}
 }

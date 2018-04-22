@@ -7,15 +7,18 @@ using System.Linq;
 public class Player : MovingObject {
 
 	//Move
-	public bool MoveRangeShowed = false;
+
 	public bool alreadyMoved = false;
 	private Vector3 clickPos;
-	protected int movingToNum;
+	public bool AttackRangeShowed = false;
+
 
 	GameObject moveRangeHolder;
 
 	// Use this for initialization
 	void Awake () {
+		
+		base.Awake ();
 		GameManager.instance.AddPlayerToList (this);
 	}
 
@@ -23,15 +26,30 @@ public class Player : MovingObject {
 		GameObject[] moveRangeInstances;
 		moveRangeInstances = GameObject.FindGameObjectsWithTag ("moveRange");
 		moveRangeHolder = GameObject.Find ("moveRange");
-		print (moveRangeInstances);
+
 		//Thread.Sleep (50);
 		foreach (GameObject element in moveRangeInstances) {
 			Destroy (element);
 		}
 		Destroy (moveRangeHolder);
 		//moveRanges.Clear ();
-
+		MoveRangeShowed = false;
 	}
+
+	public void deleteAttackRange(){
+		GameObject[] moveRangeInstances;
+		moveRangeInstances = GameObject.FindGameObjectsWithTag ("attackRange");
+		moveRangeHolder = GameObject.Find ("attackRange");
+
+		//Thread.Sleep (50);
+		foreach (GameObject element in moveRangeInstances) {
+			Destroy (element);
+		}
+		Destroy (moveRangeHolder);
+		//moveRanges.Clear ();
+		AttackRangeShowed = false;
+	}
+
 
 	private bool IsMouseOnMoveRange(Vector3 mousePos){
 		Collider2D h = Physics2D.OverlapPoint (mousePos);
@@ -42,9 +60,24 @@ public class Player : MovingObject {
 			return ( h.tag == "moveRange");
 	}
 
+	private bool IsMouseOnAttackRange(Vector3 mousePos){
+		Collider2D h = Physics2D.OverlapPoint (mousePos);
+		if (h == null) {
+			return false;
+		}
+		else 
+			return ( h.tag == "attackRange");
+	}
+		
+
 	public void showMoveRange(){
 		setMoveRange (Convert.ToInt32(ObjGridVec.x),Convert.ToInt32(ObjGridVec.y));
 		RendeMoveRange (MoveRange);
+	}
+
+	public void showAttackRange(){
+		setAttackRange(Convert.ToInt32(ObjGridVec.x),Convert.ToInt32(ObjGridVec.y));
+		RendeAttackRange (AttackRange);
 	}
 
 	// Update is called once per frame
@@ -55,6 +88,8 @@ public class Player : MovingObject {
 		if (Input.GetMouseButtonUp (0) && IsMouseOnMoveRange (clickPos)) {
 
 			Collider2D h = Physics2D.OverlapPoint (clickPos);
+
+			deleteMoveRange ();
 			BoardManager.instance.floorMoveableArray [Convert.ToInt32 (ObjGridVec.y),Convert.ToInt32 (ObjGridVec.x)] = 1;
 			setBestPath(MovingObjTransFromIntoGridPos (h.transform.position));
 
@@ -62,29 +97,28 @@ public class Player : MovingObject {
 			BoardManager.instance.floorMoveableArray [Convert.ToInt32 (ObjGridVec.y), Convert.ToInt32 (ObjGridVec.x)] = 0;
 			//setBestPath (new Vector3(6f,8f,0f));
 			movingToNum = bestPath.Count - 1;
+			MoveButton.instance.disable ();
+		
 		}
 
+		if (Input.GetMouseButtonUp (0) && IsMouseOnAttackRange (clickPos)) {
 
-		for (int i = bestPath.Count - 1; i >= 0; i--) {
-			if (Vector3.Distance (this.transform.position, MovingObjTransFromIntoWorldPos(bestPath [i])) >= float.Epsilon && movingToNum == i) {
-				//如果向近的地方移动就先增加order，远的地方就后改变
-				if (this.transform.position.y > MovingObjTransFromIntoWorldPos (bestPath [i]).y ||(
-					this.transform.position.y == MovingObjTransFromIntoWorldPos (bestPath [i]).y && this.transform.position.x < MovingObjTransFromIntoWorldPos (bestPath [i]).x
-				)) {
-					this.GetComponent<SpriteRenderer> ().sortingOrder = BoardManager.instance.TilesInstance[Convert.ToInt32(bestPath [i].x), Convert.ToInt32((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
+			Collider2D h = Physics2D.OverlapPoint (clickPos);
+
+			deleteAttackRange ();
+			//print(AttackObjTransFromIntoGridPos (h.transform.position));
+			for(int i = 0; i< BoardManager.instance.fightEnemiesIndex.Length;i++){
+				if(GameManager.instance.enemies[BoardManager.instance.fightEnemiesIndex[i]].ObjGridVec == AttackObjTransFromIntoGridPos (h.transform.position)){
+
+					normalAttack (this.gameObject, GameManager.instance.enemies [BoardManager.instance.fightEnemiesIndex [i]].gameObject);
+
 				}
-
-				move (bestPath [i]);
-			}else if (Vector3.Distance (this.transform.position, MovingObjTransFromIntoWorldPos(bestPath [i])) <= float.Epsilon && movingToNum == i){
-				movingToNum -= 1;
-				this.GetComponent<SpriteRenderer> ().sortingOrder = BoardManager.instance.TilesInstance[Convert.ToInt32(bestPath [i].x), Convert.ToInt32((bestPath [i].y))].GetComponent<SpriteRenderer> ().sortingOrder + 1;
 			}
+
 		}
 
-		if (movingToNum == -1) {
-			deleteMoveRange ();
-			MoveRangeShowed = false;
-			movingToNum -= 1;
-		}
+
+		base.Update ();
+
 	}
 }
