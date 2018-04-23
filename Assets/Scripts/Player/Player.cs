@@ -13,7 +13,8 @@ public class Player : MovingObject {
 
 	private Vector3 clickPos;
 	public bool AttackRangeShowed = false;
-	public bool OwnTurn = false;
+	public int ObjectIndex;
+
 
 
 	GameObject moveRangeHolder;
@@ -49,7 +50,7 @@ public class Player : MovingObject {
 			Destroy (element);
 		}
 		Destroy (moveRangeHolder);
-		//moveRanges.Clear ();
+
 		AttackRangeShowed = false;
 	}
 
@@ -111,13 +112,16 @@ public class Player : MovingObject {
 
 				deleteAttackRange ();
 				//print(AttackObjTransFromIntoGridPos (h.transform.position));
-				for (int i = 0; i < BoardManager.instance.fightEnemiesIndex.Length; i++) {
-					if (GameManager.instance.enemies [BoardManager.instance.fightEnemiesIndex [i]].ObjGridVec == AttackObjTransFromIntoGridPos (h.transform.position)) {
+				for (int i = 0; i < GameManager.instance.enemies.Count; i++) {
+					//print (GameManager.instance.enemies [BoardManager.instance.fightEnemiesIndex [i]]);
+					if (GameManager.instance.enemies [i] != null) {
+						if (GameManager.instance.enemies [i].ObjGridVec == AttackObjTransFromIntoGridPos (h.transform.position)) {
+						
+							normalAttack (this.gameObject, GameManager.instance.enemies [i].gameObject);
+							AttackButton.instance.disable ();
+							alreadyAttacked = true;
 
-						normalAttack (this.gameObject, GameManager.instance.enemies [BoardManager.instance.fightEnemiesIndex [i]].gameObject);
-						AttackButton.instance.disable ();
-						alreadyAttacked = true;
-
+						}
 					}
 				}
 			}
@@ -128,6 +132,7 @@ public class Player : MovingObject {
 			alive = false;
 			animator.SetTrigger ("death");
 			Invoke ("deleteCharacter", 1.5f);
+
 		}
 
 

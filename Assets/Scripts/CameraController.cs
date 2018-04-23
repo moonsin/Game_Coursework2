@@ -10,7 +10,7 @@ public class CameraController : MonoBehaviour {
 
 	public void goUpStairs(){
 		
-		toPos = new Vector3 (Camera.main.transform.position.x, this.transform.position.y + 20f);
+		toPos = new Vector3 (Camera.main.transform.position.x, Camera.main.transform.position.y + 20f);
 		MoveCamera = true;
 
 	}
@@ -25,6 +25,8 @@ public class CameraController : MonoBehaviour {
 		if (MoveCamera) {
 			if (Camera.main.transform.position.y < toPos.y) {
 				Camera.main.transform.position = new Vector3 (Camera.main.transform.position.x, Camera.main.transform.position.y + moveSpeed, Camera.main.transform.position.z);
+			} else {
+				MoveCamera = false;
 			}
 		}
 	}

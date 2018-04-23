@@ -18,6 +18,9 @@ public class MovingObject : MonoBehaviour {
 	public int skillPoint;
 	public int FirstAttackPoint;
 	protected bool alive = true;
+	public Text damageIndicator;
+
+	public bool OwnTurn = false;
 
 	public Vector3 ObjGridVec; //网格上的位置
 
@@ -46,6 +49,12 @@ public class MovingObject : MonoBehaviour {
 		this.MovingPoint = (int)Mathf.Floor ((float)Dexterity / 2f);
 		this.FirstAttackPoint = (int)Mathf.Floor (UnityEngine.Random.value* 20 + Dexterity);
 		animator = GetComponent<Animator>();
+
+
+		damageIndicator = GameObject.Find ("DamageIndicator").GetComponent<Text> ();
+		damageIndicator.enabled = false;
+
+
 
 	}
 
@@ -235,6 +244,7 @@ public class MovingObject : MonoBehaviour {
 
 		int targetIndex = MoveRange.IndexOf (newPos);
 		bestPath.Add (newPos);
+
 		while(bestPathArray[targetIndex]!=0){
 			bestPath.Add (MoveRange [bestPathArray [targetIndex]]);
 			targetIndex = bestPathArray [targetIndex];
@@ -389,15 +399,31 @@ public class MovingObject : MonoBehaviour {
 		}
 	}
 
+	protected void showDamage(int damage){
+		damageIndicator.text = "HP: -" + damage.ToString ();
+		Vector3 newPos = Camera.main.WorldToScreenPoint(this.gameObject.transform.position);
+		newPos.y += 20f;
+		damageIndicator.transform.position = newPos;
+		damageIndicator.enabled = true;
+		Invoke ("hideDamage", 1f);
+	}
+
+	protected void hideDamage(){
+		damageIndicator.enabled = false;
+	}
+
 	protected void hit(int damage){
 		setHitAnimate (this.gameObject);
+		showDamage (damage);
 		this.hp -= damage;
+
 	}
 
 	private void deleteCharacter(){
 		BoardManager.instance.floorMoveableArray[Convert.ToInt32 (ObjGridVec.y),Convert.ToInt32 (ObjGridVec.x)] = 1;
 		int i = 0;
 		for (; BoardManager.instance.fightOrderArray [i] != this.gameObject; i++);
+
 		GameObject.FindGameObjectsWithTag ("orderInName")[i].GetComponent<Text>().color = Color.grey;
 		Destroy (this.gameObject);
 
@@ -410,8 +436,15 @@ public class MovingObject : MonoBehaviour {
 				AttackButton.instance.disable ();
 			}
 		}
+
+		if (OwnTurn) {
+			BoardManager.instance.allButtonDisabled ();
+			BoardManager.instance.MoveToNextCharacter = true;
+		}
 			
 	}
+
+
 
 	// Update is called once per frame
 	protected void Update () {

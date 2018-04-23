@@ -15,6 +15,16 @@ public class BoardManager : MonoBehaviour {
 	protected Transform enemiesHolder;
 	protected Transform orderNameHolder;
 	public GameObject OrderNameText;
+	public Text TurnIndicator;
+
+
+	public Text EnemyName;
+	public Text EnemyHP;
+	public Text EnemyATK;
+	public Text EnemyDEF;
+	public Text EnemyDEX;
+	public Enemy infoEnemy;
+	public Player infoPlayer;
 
 	public GameObject[,] TilesInstance;
 	protected int[,] playersPos;
@@ -38,6 +48,7 @@ public class BoardManager : MonoBehaviour {
 	public bool MoveToNextCharacter = false;
 	public bool allEnemiesdied = false;
 
+	public GameObject EnemyInfo;
 
 	public Vector3 TransFromWorldToISO(Vector3 vec){
 		Vector3 newVec = new Vector3();
@@ -113,13 +124,15 @@ public class BoardManager : MonoBehaviour {
 		}
 
 		for (int i = 0; i < characters.Length; i++) {
-			rendeCharacter (Pos [i, 0], Pos [i, 1], characters[i], Holder, type);
-			floorMoveableArray [Pos [i, 1], Pos [i, 0]] = 0;
+
 			if (type == 0) {
 				characters [i].GetComponent<Player> ().ObjGridVec = new Vector3(Pos[i,0],Pos [i, 1],0);
 			} else {
 				characters [i].GetComponent<Enemy> ().ObjGridVec = new Vector3(Pos[i,0],Pos [i, 1],0);
 			}
+
+			rendeCharacter (Pos [i, 0], Pos [i, 1], characters[i], Holder, type);
+			floorMoveableArray [Pos [i, 1], Pos [i, 0]] = 0;
 		}
 
 		if (type == 1) {
@@ -141,6 +154,8 @@ public class BoardManager : MonoBehaviour {
 
 		GameObject instance =
 			Instantiate (character, newVec, Quaternion.identity) as GameObject;
+
+		instance.name = instance.name.Remove (instance.name.Length - 7, 7);
 		instance.transform.SetParent (Holder);
 	}
 		
@@ -153,6 +168,19 @@ public class BoardManager : MonoBehaviour {
 			instance = this;
 		} 
 		orderNameHolder = GameObject.Find ("OrderList").transform;
+
+		TurnIndicator = GameObject.Find ("TurnIndicator").GetComponent<Text>();
+		TurnIndicator.enabled = false;
+
+		EnemyInfo = GameObject.Find ("EnemyInfo");
+		EnemyName = GameObject.Find ("EnemyName").GetComponent<Text>();
+		EnemyHP =  GameObject.Find ("EnemyHP").GetComponent<Text>();
+		EnemyATK = GameObject.Find ("EnemyATK").GetComponent<Text>();
+		EnemyDEF = GameObject.Find ("EnemyDEF").GetComponent<Text>();
+		EnemyDEX = GameObject.Find ("EnemyDEX").GetComponent<Text>();
+		EnemyInfo.SetActive (false);
+
+
 	}
 
 	protected void initOrderArray(){
@@ -160,6 +188,7 @@ public class BoardManager : MonoBehaviour {
 		int length = fightPlayersIndex.Length + fightEnemiesIndex.Length;
 		fightOrderArray = new GameObject[length];
 		int i = 0;
+
 		for (; i < fightPlayersIndex.Length; i++) {
 
 			fightOrderArray [i] = GameManager.instance.players[i].gameObject;
@@ -228,7 +257,7 @@ public class BoardManager : MonoBehaviour {
 
 			toInstantiate.name = fightOrderArray [i].name;
 
-			toInstantiate.GetComponent<Text> ().text = fightOrderArray [i].name.Remove(fightOrderArray [i].name.Length-7,7);
+			toInstantiate.GetComponent<Text> ().text = fightOrderArray [i].name;
 
 
 
@@ -260,6 +289,7 @@ public class BoardManager : MonoBehaviour {
 		GameObject[] orderNames;
 		GameManager.instance.players = new List<Player> ();
 		GameManager.instance.enemies = new List<Enemy> ();
+		CharacterOrderController = 0;
 		orderNames = GameObject.FindGameObjectsWithTag ("orderInName");
 		for (int i = 0; i < orderNames.Length; i++) {
 			Destroy (orderNames [i]);
@@ -267,8 +297,80 @@ public class BoardManager : MonoBehaviour {
 
 	}
 
+	public void hideTurnIndicator(){
+		TurnIndicator.enabled = false;
+	}
+
+	public void showTurnIndicator(string role){
+		TurnIndicator.text = role + "'s Turn !";
+		TurnIndicator.enabled = true;
+		Invoke ("hideTurnIndicator", 1f);
+	}
+
+	protected Enemy isEnemy(Vector3 Pos){
+		Vector3 mousePos;
+		mousePos = Camera.main.ScreenToWorldPoint (Pos);
+		mousePos.z = 0f;
+
+		for (int i = 0; i < GameManager.instance.enemies.Count; i++) {
+			if (GameManager.instance.enemies [i] != null) {
+				if (Mathf.Abs (GameManager.instance.enemies [i].transform.position.x - mousePos.x) < 0.3f && 
+					mousePos.y - GameManager.instance.enemies [i].transform.position.y > 0 && 
+					mousePos.y - GameManager.instance.enemies [i].transform.position.y < 1) {
+					return GameManager.instance.enemies [i];
+				}
+			}
+		}
+
+		return new Enemy();
+	}
+
+	protected Player isPlayer(Vector3 Pos){
+		Vector3 mousePos;
+		mousePos = Camera.main.ScreenToWorldPoint (Pos);
+		mousePos.z = 0f;
+
+		for (int i = 0; i < GameManager.instance.players.Count; i++) {
+			if (GameManager.instance.players [i] != null) {
+				if (Mathf.Abs (GameManager.instance.players [i].transform.position.x - mousePos.x) < 0.3f &&
+				   mousePos.y - GameManager.instance.players [i].transform.position.y > 0 &&
+				   mousePos.y - GameManager.instance.players [i].transform.position.y < 1) {
+					return GameManager.instance.players [i];
+				}
+			}
+		}
+
+		return new Player();
+	}
+
 	// Update is called once per frame
 	protected void Update () {
+
+		infoEnemy = isEnemy (Input.mousePosition);
+
+		if (infoEnemy != null) {
+			EnemyName.text = infoEnemy.name;
+			EnemyATK.text = "ATK: " +infoEnemy.attackPoint.ToString();
+			EnemyDEF.text = "DEF: " + infoEnemy.defendPoint.ToString();
+			EnemyHP.text = "HP: " + infoEnemy.hp.ToString();
+			EnemyDEX.text = "DEX: " + infoEnemy.Dexterity.ToString();
+			EnemyInfo.SetActive (true);
+		} else if( infoPlayer ==null){
+			EnemyInfo.SetActive (false);
+		};
+
+		infoPlayer = isPlayer (Input.mousePosition);
+
+		if (infoPlayer != null) {
+			EnemyName.text = infoPlayer.name;
+			EnemyATK.text = "ATK: " +infoPlayer.attackPoint.ToString();
+			EnemyDEF.text = "DEF: " + infoPlayer.defendPoint.ToString();
+			EnemyHP.text = "HP: " + infoPlayer.hp.ToString();
+			EnemyDEX.text = "DEX: " + infoPlayer.Dexterity.ToString();
+			EnemyInfo.SetActive (true);
+		} else if(infoEnemy == null){
+			EnemyInfo.SetActive (false);
+		};
 		
 		if (MoveToNextCharacter) {
 			MoveToNextCharacter = false;
@@ -290,14 +392,20 @@ public class BoardManager : MonoBehaviour {
 			GameObject.FindGameObjectsWithTag ("orderInName")[CharacterOrderController].GetComponent<Text>().color = Color.yellow;
 
 			if (fightOrderArray [CharacterOrderController].tag == "Player") {
+				showTurnIndicator ("Player");
+
 				fightOrderArray [CharacterOrderController].GetComponent<Player> ().OwnTurn = true;
 				fightOrderArray [CharacterOrderController].GetComponent<Player> ().alreadyMoved = false;
 				fightOrderArray [CharacterOrderController].GetComponent<Player> ().alreadyAttacked = false;
 				allButtonEnabled ();
+
 			} else {
+				//showTurnIndicator ("Enemy");
 				fightOrderArray [CharacterOrderController].GetComponent<Enemy> ().run ();
 			}
 		}
+
+
 
 	}
 }
