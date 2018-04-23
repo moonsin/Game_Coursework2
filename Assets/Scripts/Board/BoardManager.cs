@@ -180,7 +180,6 @@ public class BoardManager : MonoBehaviour {
 		EnemyDEX = GameObject.Find ("EnemyDEX").GetComponent<Text>();
 		EnemyInfo.SetActive (false);
 
-
 	}
 
 	protected void initOrderArray(){

@@ -10,7 +10,8 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance = null;
 	private startStoryManager startStoryScript;
 	private TowerFightManager towerFightScript;
-	public static bool isTowerFight = false;
+	public bool isTowerFight = true;
+	public Canvas controlCanvas;
 
 	public List<Player> players;
 	public List<Enemy> enemies;
@@ -24,12 +25,12 @@ public class GameManager : MonoBehaviour {
 		} else if (instance != this) {
 			Destroy (gameObject);
 		}
-
+		controlCanvas.enabled = false;
 		startStoryScript = GetComponent<startStoryManager>();
 
 		towerFightScript = GetComponent<TowerFightManager>();
 
-		InitGame ();
+		//InitGame ();
 	}
 
 
@@ -53,11 +54,10 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
 		if (isTowerFight) {
 			isTowerFight = false;
+			controlCanvas.enabled = true;
 			towerFightScript.SetupScene ();
 		}
-
 	}
 }

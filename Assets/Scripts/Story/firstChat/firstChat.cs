@@ -23,7 +23,10 @@ public class firstChat : MonoBehaviour {
 		Debug.Log(choiceID);
 		if (choiceID == 2) {
 			//rpgTalk.NewTalk("1","2");
-			Invoke("showBE1",2f);
+			Invoke ("showBE1", 2f);
+		} else if (choiceID == 1) {
+			Destroy (GameObject.FindGameObjectWithTag ("Story"));
+			GameManager.instance.isTowerFight = true;
 		}
 
 	}

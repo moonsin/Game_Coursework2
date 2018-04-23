@@ -8,6 +8,7 @@ public class TowerFightBoardManager : BoardManager {
 	public GameObject[] firstFloorTiles;
 	public GameObject[] secondFloorTiles;
 	public GameObject[] thirdFloorTiles;
+	private bool towerFightBegin = false;
 
 	private int floorNumber = 1;
 
@@ -72,7 +73,7 @@ public class TowerFightBoardManager : BoardManager {
 
 
 	int[,] floor3PlayerPos = new int[3, 2]{{6,0},{6,2},{5,1}};
-	int[,] floor3EnemyPos = new int[5,2]{{1,4},{1,5},{1,3},{1,2},{11,1}};
+	int[,] floor3EnemyPos = new int[5,2]{{1,4},{1,5},{1,3},{1,2},{1,1}};
 
 	int [,] thirdFloormap = new int [8,8]{
 		{0,0,0,0,0,0,0,0},
@@ -100,28 +101,7 @@ public class TowerFightBoardManager : BoardManager {
 	// Use this for initialization
 	void Awake(){
 
-		columns = 8;
-		rows = 8;
 
-		boardHolder = new GameObject ("Board").transform;
-		playersHolder = new GameObject ("Players").transform;
-		enemiesHolder = new GameObject ("Enemies").transform;
-
-		TilesInstance = new GameObject[8, 8];
-
-		playersPos = new int[3, 2]{ {7, 5},{7, 4},{7,1}};
-		enemiesPos = new int[4, 2]{ {1, 4},{1,5},{2,0},{2,5}};
-
-		floorMoveableArray = new int[8, 8];
-		floorAttackAbleArray = new int[8, 8];
-
-		initFloorMoveableArray (firstFloorHeightMap);
-		initFloorAttackAbleArray (firstFloorHeightMap);
-
-		fightPlayersIndex = firstFloorPlayers;
-		fightEnemiesIndex = firstFloorEnemies;
-
-		base.Awake ();
 	}
 
 	private void initFloorMoveableArray(int[,] HeightMap){
@@ -153,6 +133,30 @@ public class TowerFightBoardManager : BoardManager {
 
 	public void SetupBoard(){
 
+		columns = 8;
+		rows = 8;
+
+		boardHolder = new GameObject ("Board").transform;
+		playersHolder = new GameObject ("Players").transform;
+		enemiesHolder = new GameObject ("Enemies").transform;
+
+		TilesInstance = new GameObject[8, 8];
+
+		playersPos = new int[3, 2]{ {7, 5},{7, 4},{7,1}};
+		enemiesPos = new int[4, 2]{ {1, 4},{1,5},{2,0},{2,5}};
+
+		floorMoveableArray = new int[8, 8];
+		floorAttackAbleArray = new int[8, 8];
+
+		initFloorMoveableArray (firstFloorHeightMap);
+		initFloorAttackAbleArray (firstFloorHeightMap);
+
+		fightPlayersIndex = firstFloorPlayers;
+		fightEnemiesIndex = firstFloorEnemies;
+
+		base.Awake ();
+
+
 		firstFloorSetup ();
 		for (int i = 0; i < firstFloorPlayers.Length; i++) {
 			firstFloorPlayersObj [i] = Players [firstFloorPlayers [i]];
@@ -162,6 +166,8 @@ public class TowerFightBoardManager : BoardManager {
 		}
 		setCharacters (playersPos,firstFloorPlayersObj,0);
 		setCharacters (enemiesPos,firstFloorEnemiesObj,1);
+
+		towerFightBegin = true;
 
 	}
 
@@ -213,117 +219,121 @@ public class TowerFightBoardManager : BoardManager {
 
 	// Update is called once per frame
 	void Update () {
-		
-		if (setCharactersFinished) {
-			setCharactersFinished = false;
-			initOrderArray ();
-			initOrderNames ();
 
-
-			if (fightOrderArray [0].tag == "Player") {
-				showTurnIndicator ("Player");
-				fightOrderArray [0].GetComponent<Player> ().OwnTurn = true;
-				fightOrderArray [0].GetComponent<Player> ().alreadyMoved = false;
-				fightOrderArray [0].GetComponent<Player> ().alreadyAttacked = false;
-				allButtonEnabled ();
-			} else {
-				allButtonDisabled ();
-				fightOrderArray [0].GetComponent<Enemy> ().run ();
-			}
+		if (!towerFightBegin) {
+			return;
 		}
+			if (setCharactersFinished) {
+				setCharactersFinished = false;
+				initOrderArray ();
+				initOrderNames ();
 
-		checkAllenemieDied ();	
 
-		if (allEnemiesdied) {
+				if (fightOrderArray [0].tag == "Player") {
+					showTurnIndicator ("Player");
+					fightOrderArray [0].GetComponent<Player> ().OwnTurn = true;
+					fightOrderArray [0].GetComponent<Player> ().alreadyMoved = false;
+					fightOrderArray [0].GetComponent<Player> ().alreadyAttacked = false;
+					allButtonEnabled ();
+				} else {
+					allButtonDisabled ();
+					fightOrderArray [0].GetComponent<Enemy> ().run ();
+				}
+			}
+
+			checkAllenemieDied ();	
+
+			if (allEnemiesdied) {
 
 
-			floorNumber += 1;
-			setCharactersFinished = false;
-			//Destroy (playersHolder.gameObject);
-			initBoard ();
-			floorMoveableArray = new int[8, 8];
-			floorAttackAbleArray = new int[8, 8];
+				floorNumber += 1;
+				setCharactersFinished = false;
+				//Destroy (playersHolder.gameObject);
+				initBoard ();
+				floorMoveableArray = new int[8, 8];
+				floorAttackAbleArray = new int[8, 8];
 
-			for (int i = 0; i < GameObject.FindGameObjectsWithTag ("Player").Length; i++) {
+				for (int i = 0; i < GameObject.FindGameObjectsWithTag ("Player").Length; i++) {
 				
-				GameObject.FindGameObjectsWithTag ("Player")[i].GetComponent<Player>().OwnTurn = false;
+					GameObject.FindGameObjectsWithTag ("Player") [i].GetComponent<Player> ().OwnTurn = false;
 
-			}
+				}
 
-			//playersHolder = new GameObject ("Players").transform;
+				//playersHolder = new GameObject ("Players").transform;
 
-			if (floorNumber == 2) {
+				if (floorNumber == 2) {
 				
-				secondFloorSetup ();
-				playersPos = floor2PlayerPos;
-				enemiesPos = floor2EnemyPos;
+					secondFloorSetup ();
+					playersPos = floor2PlayerPos;
+					enemiesPos = floor2EnemyPos;
 
-				initFloorMoveableArray (SecondFloorHeightMap);
-				initFloorAttackAbleArray (SecondFloorHeightMap);
+					initFloorMoveableArray (SecondFloorHeightMap);
+					initFloorAttackAbleArray (SecondFloorHeightMap);
 
-				GameObject[] currentPlayersObj = GameObject.FindGameObjectsWithTag ("Player");
-				firstFloorPlayers = new int[currentPlayersObj.Length];
+					GameObject[] currentPlayersObj = GameObject.FindGameObjectsWithTag ("Player");
+					firstFloorPlayers = new int[currentPlayersObj.Length];
 
-				for (int i = 0; i < currentPlayersObj.Length; i++) {
-					firstFloorPlayers [i] = currentPlayersObj [i].GetComponent<Player> ().ObjectIndex;
+					for (int i = 0; i < currentPlayersObj.Length; i++) {
+						firstFloorPlayers [i] = currentPlayersObj [i].GetComponent<Player> ().ObjectIndex;
+					}
+
+					fightPlayersIndex = firstFloorPlayers;
+					fightEnemiesIndex = secondFloorEnemies;
+
+
+					for (int i = 0; i < secondFloorEnemies.Length; i++) {
+						secondFloorEnemiesObj [i] = Enemies [secondFloorEnemies [i]];
+					}
+
+
+					setCharacters (playersPos, currentPlayersObj, 0);
+
+					for (int i = 0; i < currentPlayersObj.Length; i++) {
+						Destroy (currentPlayersObj [i]);
+					}
+
+					setCharacters (enemiesPos, secondFloorEnemiesObj, 1);
+
+					GameManager.instance.GetComponent<CameraController> ().goUpStairs ();
 				}
 
-				fightPlayersIndex = firstFloorPlayers;
-				fightEnemiesIndex = secondFloorEnemies;
+				if (floorNumber == 3) {
+					thirdFloorSetup ();
+					playersPos = floor3PlayerPos;
+					enemiesPos = floor3EnemyPos;
+
+					initFloorMoveableArray (thirdFloorHeightMap);
+					initFloorAttackAbleArray (thirdFloorHeightMap);
+
+					GameObject[] currentPlayersObj = GameObject.FindGameObjectsWithTag ("Player");
+					firstFloorPlayers = new int[currentPlayersObj.Length];
+
+					for (int i = 0; i < currentPlayersObj.Length; i++) {
+						firstFloorPlayers [i] = currentPlayersObj [i].GetComponent<Player> ().ObjectIndex;
+					}
+
+					fightPlayersIndex = firstFloorPlayers;
+					fightEnemiesIndex = thirdFloorEnemies;
+
+					for (int i = 0; i < thirdFloorEnemies.Length; i++) {
+						thirdFloorEnemiesObj [i] = Enemies [thirdFloorEnemies [i]];
+					}
+
+					setCharacters (playersPos, currentPlayersObj, 0);
+
+					for (int i = 0; i < currentPlayersObj.Length; i++) {
+						Destroy (currentPlayersObj [i]);
+					}
+
+					setCharacters (enemiesPos, thirdFloorEnemiesObj, 1);
+
+					GameManager.instance.GetComponent<CameraController> ().goUpStairs ();
 
 
-				for (int i = 0; i < secondFloorEnemies.Length; i++) {
-					secondFloorEnemiesObj [i] = Enemies [secondFloorEnemies [i]];
 				}
-
-
-				setCharacters (playersPos,currentPlayersObj,0);
-
-				for (int i = 0; i < currentPlayersObj.Length; i++) {
-					Destroy (currentPlayersObj [i]);
-				}
-
-				setCharacters (enemiesPos,secondFloorEnemiesObj,1);
-
-				GameManager.instance.GetComponent<CameraController> ().goUpStairs ();
 			}
 
-			if (floorNumber == 3) {
-				thirdFloorSetup ();
-				playersPos = floor3PlayerPos;
-				enemiesPos = floor3EnemyPos;
+			base.Update ();
 
-				initFloorMoveableArray (thirdFloorHeightMap);
-				initFloorAttackAbleArray (thirdFloorHeightMap);
-
-				GameObject[] currentPlayersObj = GameObject.FindGameObjectsWithTag ("Player");
-				firstFloorPlayers = new int[currentPlayersObj.Length];
-
-				for (int i = 0; i < currentPlayersObj.Length; i++) {
-					firstFloorPlayers [i] = currentPlayersObj [i].GetComponent<Player> ().ObjectIndex;
-				}
-
-				fightPlayersIndex = firstFloorPlayers;
-				fightEnemiesIndex = thirdFloorEnemies;
-
-				for (int i = 0; i < thirdFloorEnemies.Length; i++) {
-					thirdFloorEnemiesObj [i] = Enemies [thirdFloorEnemies [i]];
-				}
-
-				setCharacters (playersPos,currentPlayersObj,0);
-
-				for (int i = 0; i < currentPlayersObj.Length; i++) {
-					Destroy (currentPlayersObj [i]);
-				}
-
-				setCharacters (enemiesPos,thirdFloorEnemiesObj,1);
-
-				GameManager.instance.GetComponent<CameraController> ().goUpStairs ();
-
-
-			}
-		}
-
-		base.Update ();
 	}
 }

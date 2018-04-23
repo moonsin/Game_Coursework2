@@ -2381,7 +2381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1361472236d2c4af3bf47b4e19067dd1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPoint: 8
+  attackPoint: 100
   Dexterity: 6
   defendPoint: 0
   hp: 20

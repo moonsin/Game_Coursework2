@@ -10,6 +10,7 @@ public class Enemy : MovingObject {
 	private Vector3 target;
 	private Vector3 BestPlace;
 	private Player PlayerTarget;
+	private bool EnemyOwnTurn = false;
 
 	// Use this for initialization
 	void Awake () {
@@ -26,6 +27,8 @@ public class Enemy : MovingObject {
 	}
 
 	public void run(){
+		EnemyOwnTurn = true;
+
 		PlayerTarget = isNearPlayer ();
 
 		if (PlayerTarget == null) {
@@ -40,7 +43,10 @@ public class Enemy : MovingObject {
 	}
 
 	private void turnOver(){
+		EnemyOwnTurn = false;
+		hideCharacterIndicator ();
 		BoardManager.instance.MoveToNextCharacter = true;
+	
 	}
 
 	private void MoveEnemy(){
@@ -121,6 +127,10 @@ public class Enemy : MovingObject {
 			alive = false;
 			animator.SetTrigger ("death");
 			Invoke ("deleteCharacter", 1.5f);
+		}
+
+		if (EnemyOwnTurn) {
+			showCharacterIndicator ();
 		}
 
 		base.Update ();

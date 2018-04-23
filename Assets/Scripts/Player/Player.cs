@@ -87,7 +87,7 @@ public class Player : MovingObject {
 	// Update is called once per frame
 	void Update () {
 		if (OwnTurn) {
-
+			showCharacterIndicator ();
 			clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 
 			if (Input.GetMouseButtonUp (0) && IsMouseOnMoveRange (clickPos)) {

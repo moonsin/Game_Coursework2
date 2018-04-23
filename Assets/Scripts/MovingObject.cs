@@ -19,6 +19,7 @@ public class MovingObject : MonoBehaviour {
 	public int FirstAttackPoint;
 	protected bool alive = true;
 	public Text damageIndicator;
+	public Image characterIndicator;
 
 	public bool OwnTurn = false;
 
@@ -53,7 +54,8 @@ public class MovingObject : MonoBehaviour {
 
 		damageIndicator = GameObject.Find ("DamageIndicator").GetComponent<Text> ();
 		damageIndicator.enabled = false;
-
+		characterIndicator = GameObject.Find ("CharacterIndicator").GetComponent<Image> ();
+		characterIndicator.enabled = false;
 
 
 	}
@@ -410,6 +412,17 @@ public class MovingObject : MonoBehaviour {
 
 	protected void hideDamage(){
 		damageIndicator.enabled = false;
+	}
+
+	protected void showCharacterIndicator(){
+		Vector3 newPos = Camera.main.WorldToScreenPoint(this.gameObject.transform.position);
+		newPos.y += 104f;
+		characterIndicator.transform.position = newPos;
+		characterIndicator.enabled = true;
+	}
+
+	public void hideCharacterIndicator(){
+		characterIndicator.enabled = false;
 	}
 
 	protected void hit(int damage){

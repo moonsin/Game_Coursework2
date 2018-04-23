@@ -25,6 +25,7 @@ public class RestButton : ControlButton {
 			player.OwnTurn = false;
 			player.deleteMoveRange ();
 			player.deleteAttackRange ();
+			player.hideCharacterIndicator ();
 			BoardManager.instance.allButtonDisabled();
 			BoardManager.instance.MoveToNextCharacter = true;
 		} 
