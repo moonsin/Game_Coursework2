@@ -23,8 +23,12 @@ public class RestButton : ControlButton {
 		if (!disabled) {
 			player = BoardManager.instance.fightOrderArray[BoardManager.instance.CharacterOrderController].GetComponent<Player>();
 			player.OwnTurn = false;
+
 			player.deleteMoveRange ();
 			player.deleteAttackRange ();
+			player.deleteSkillRange ();
+
+			BoardManager.instance.SkillIndicator.SetActive (false);
 			player.hideCharacterIndicator ();
 			BoardManager.instance.allButtonDisabled();
 			BoardManager.instance.MoveToNextCharacter = true;
@@ -33,6 +37,6 @@ public class RestButton : ControlButton {
 
 	// Update is called once per frame
 	void Update () {
-		
+
 	}
 }

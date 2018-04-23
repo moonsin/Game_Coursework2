@@ -10,6 +10,8 @@ TagManager:
   - Enemy
   - orderInName
   - attackRange
+  - skillButton
+  - skillRange
   layers:
   - Default
   - TransparentFX

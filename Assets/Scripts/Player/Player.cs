@@ -14,6 +14,11 @@ public class Player : MovingObject {
 	private Vector3 clickPos;
 	public bool AttackRangeShowed = false;
 	public int ObjectIndex;
+	public bool skillShowed = false;
+	public bool SkillRangeShowed = false;
+	public bool isCleave = false;
+
+	private bool EnemyKilled = false;
 
 
 
@@ -54,6 +59,20 @@ public class Player : MovingObject {
 		AttackRangeShowed = false;
 	}
 
+	public void deleteSkillRange(){
+		GameObject[] moveRangeInstances;
+		moveRangeInstances = GameObject.FindGameObjectsWithTag ("skillRange");
+		moveRangeHolder = GameObject.Find ("attackRange");
+
+		//Thread.Sleep (50);
+		foreach (GameObject element in moveRangeInstances) {
+			Destroy (element);
+		}
+		Destroy (moveRangeHolder);
+
+		SkillRangeShowed = false;
+	}
+
 
 	private bool IsMouseOnMoveRange(Vector3 mousePos){
 		Collider2D h = Physics2D.OverlapPoint (mousePos);
@@ -84,10 +103,18 @@ public class Player : MovingObject {
 		RendeAttackRange (AttackRange);
 	}
 
+	public void showSkillRange(){
+		setAttackRange(Convert.ToInt32(ObjGridVec.x),Convert.ToInt32(ObjGridVec.y));
+		RendeSkillRange (AttackRange);
+	}
+		
+
 	// Update is called once per frame
 	void Update () {
 		if (OwnTurn) {
+			
 			showCharacterIndicator ();
+
 			clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 
 			if (Input.GetMouseButtonUp (0) && IsMouseOnMoveRange (clickPos)) {
@@ -106,6 +133,7 @@ public class Player : MovingObject {
 				alreadyMoved = true;
 			}
 
+
 			if (Input.GetMouseButtonUp (0) && IsMouseOnAttackRange (clickPos)) {
 
 				Collider2D h = Physics2D.OverlapPoint (clickPos);
@@ -116,8 +144,12 @@ public class Player : MovingObject {
 					//print (GameManager.instance.enemies [BoardManager.instance.fightEnemiesIndex [i]]);
 					if (GameManager.instance.enemies [i] != null) {
 						if (GameManager.instance.enemies [i].ObjGridVec == AttackObjTransFromIntoGridPos (h.transform.position)) {
-						
+							if (isCleave) {
+								skillPoint -= 2;
+								updatePlayerIndicator ();
+							}
 							normalAttack (this.gameObject, GameManager.instance.enemies [i].gameObject);
+
 							AttackButton.instance.disable ();
 							alreadyAttacked = true;
 
@@ -125,7 +157,16 @@ public class Player : MovingObject {
 					}
 				}
 			}
-		
+
+			if (isCleave) {
+				if (skillPoint < 2) {
+					isCleave = false;
+				}
+				AttackButton.instance.enable ();
+			}
+
+		} else {
+			isCleave = false;
 		}
 
 		if (alive && hp <= 0) {

@@ -140,7 +140,7 @@ MonoBehaviour:
   billboard: 1
   mainCamera: 1
   otherCamera: {fileID: 0}
-  txtToParse: {fileID: 4900000, guid: 58502115e30344b61a79a93276d8597c, type: 3}
+  txtToParse: {fileID: 4900000, guid: 992b6a7c7287d4fa0917ffe073e7f401, type: 3}
   enableQuickSkip: 1
   callbackScript: {fileID: 114390722665671188}
   callbackFunction: finished

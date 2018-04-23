@@ -11,15 +11,30 @@ public class MovingObject : MonoBehaviour {
 	public int Dexterity;
 	public int defendPoint;
 	public int hp;
+	public int totalHP;
 	public int MovingPoint;
 	public int AttackDisPoint;
 	public int speed = 4;
 	public int manaPoint;
 	public int skillPoint;
+	public int totalSkillPoint;
 	public int FirstAttackPoint;
+	public Image avatar;
+	public int CharacterClass; //1=knight 2= mage 3 =  cleric
+	public string[] skillNames;
+
 	protected bool alive = true;
+
 	public Text damageIndicator;
 	public Image characterIndicator;
+
+	public Image PlayerIndicator;
+	public Image PlayerIndicatorHP;
+	public Image PlayerIndicatorMP;
+	public Text PlayerIndicator_playerName;
+	public Text PlayerIndicatorHPtext;
+	public Text PlayerIndicatorMPtext;
+	public Image PlayerAvatar;
 
 	public bool OwnTurn = false;
 
@@ -40,6 +55,9 @@ public class MovingObject : MonoBehaviour {
 
 	protected List<Vector3> AttackRange = new List<Vector3> ();
 	public GameObject attackRangeTile;
+	public GameObject skillRangeTile;
+
+	protected List<Vector3> SkillRange = new List<Vector3> ();
 
 	public Animator animator; 
 
@@ -48,15 +66,24 @@ public class MovingObject : MonoBehaviour {
 	protected void Awake () {
 		
 		this.MovingPoint = (int)Mathf.Floor ((float)Dexterity / 2f);
-		this.FirstAttackPoint = (int)Mathf.Floor (UnityEngine.Random.value* 20 + Dexterity);
+		this.FirstAttackPoint = (int)Mathf.Floor (UnityEngine.Random.value* 10 + Dexterity);
 		animator = GetComponent<Animator>();
 
+		totalHP = hp;
+		totalSkillPoint = skillPoint;
 
 		damageIndicator = GameObject.Find ("DamageIndicator").GetComponent<Text> ();
 		damageIndicator.enabled = false;
+
 		characterIndicator = GameObject.Find ("CharacterIndicator").GetComponent<Image> ();
 		characterIndicator.enabled = false;
 
+		PlayerIndicatorHP = GameObject.Find ("PlayerIndicatorHP").GetComponent<Image> ();
+		PlayerIndicatorMP = GameObject.Find ("PlayerIndicatorMP").GetComponent<Image> ();
+		PlayerIndicator_playerName = GameObject.Find ("PlayerIndicator_playerName").GetComponent<Text> ();
+		PlayerIndicatorHPtext = GameObject.Find ("PlayerIndicatorHPtext").GetComponent<Text> ();
+		PlayerIndicatorMPtext = GameObject.Find ("PlayerIndicatorMPtext").GetComponent<Text> ();
+		PlayerAvatar = GameObject.Find ("PlayerAvatar").GetComponent<Image> ();
 
 	}
 
@@ -210,8 +237,10 @@ public class MovingObject : MonoBehaviour {
 
 			if (Type == "move") {
 				toInstantiate = moveRangeTile;
-			} else if(Type == "attack") {
+			} else if (Type == "attack") {
 				toInstantiate = attackRangeTile;
+			} else if (Type == "skill") {
+				toInstantiate = skillRangeTile;
 			}
 
 			toInstantiate.GetComponent<SpriteRenderer> ().sortingOrder = BoardManager.instance.TilesInstance[x, y].GetComponent<SpriteRenderer> ().sortingOrder + 1;
@@ -237,6 +266,13 @@ public class MovingObject : MonoBehaviour {
 		rangeHolder = new GameObject ("attackRange").transform;
 		foreach (Vector3 pos in AttackRange) {
 			setSingleRange (Convert.ToInt32(pos.x),Convert.ToInt32(pos.y), "attack", attackRangeTile);
+		}
+	}
+
+	protected void RendeSkillRange(List<Vector3> AttackRange){
+		rangeHolder = new GameObject ("attackRange").transform;
+		foreach (Vector3 pos in AttackRange) {
+			setSingleRange (Convert.ToInt32(pos.x),Convert.ToInt32(pos.y), "skill", skillRangeTile);
 		}
 	}
 
@@ -268,7 +304,7 @@ public class MovingObject : MonoBehaviour {
 		return newPos;
 	}
 
-	protected Vector3 AttackObjTransFromIntoGridPos(Vector3 Pos){
+	public Vector3 AttackObjTransFromIntoGridPos(Vector3 Pos){
 		Vector3 newPos = new Vector3();
 
 		foreach(Vector3 vec in AttackRange){
@@ -365,26 +401,52 @@ public class MovingObject : MonoBehaviour {
 			}
 		}
 	}
+		
+
+
 
 	public void normalAttack(GameObject attacker, GameObject defender){
 		
 		setAttackAnimate (attacker);
 
 		int damage = 0;
+		int type = 0;
+
 		if (attacker.tag == "Player") {
+			
 			damage = attacker.GetComponent<Player> ().attackPoint - defender.GetComponent<Enemy> ().defendPoint;
+
 			if (damage < 0) {
 				damage = 0;
 			}
 
-			defender.GetComponent<Enemy> ().hit (damage);
+			if (UnityEngine.Random.value <= 0.1) {
+				type = 1;
+				damage = damage * 2;
+			}
+
+			if (attacker.GetComponent<Player> ().skillNames [0] == "Cleave") {
+				if (damage > defender.GetComponent<Enemy> ().hp) {
+					attacker.GetComponent<Player> ().isCleave = true;
+				} else {
+					attacker.GetComponent<Player> ().isCleave = false;
+				}
+			} 
+
+			defender.GetComponent<Enemy> ().hit (damage,type);
 		
 		} else {
 			damage = attacker.GetComponent<Enemy> ().attackPoint - defender.GetComponent<Player> ().defendPoint;
 			if (damage < 0) {
 				damage = 0;
 			}
-			defender.GetComponent<Player> ().hit (damage);
+
+			if (UnityEngine.Random.value <= 0.1) {
+				type = 1;
+				damage = damage * 2;
+			}
+
+			defender.GetComponent<Player> ().hit (damage,type);
 		}
 			
 	}
@@ -401,8 +463,14 @@ public class MovingObject : MonoBehaviour {
 		}
 	}
 
-	protected void showDamage(int damage){
-		damageIndicator.text = "HP: -" + damage.ToString ();
+	//1暴2避
+	protected void showDamage(int damage ,int type){
+
+		if (type == 1) {
+			damageIndicator.text = "Crit!! HP: -" + damage.ToString ();
+		} else {
+			damageIndicator.text = "HP: -" + damage.ToString ();
+		}
 		Vector3 newPos = Camera.main.WorldToScreenPoint(this.gameObject.transform.position);
 		newPos.y += 20f;
 		damageIndicator.transform.position = newPos;
@@ -425,11 +493,11 @@ public class MovingObject : MonoBehaviour {
 		characterIndicator.enabled = false;
 	}
 
-	protected void hit(int damage){
+	public void hit(int damage, int type){
 		setHitAnimate (this.gameObject);
-		showDamage (damage);
-		this.hp -= damage;
 
+		showDamage (damage, type);
+		this.hp -= damage;
 	}
 
 	private void deleteCharacter(){
@@ -457,11 +525,26 @@ public class MovingObject : MonoBehaviour {
 			
 	}
 
+	public void updatePlayerIndicator(){
+		//PlayerIndicatorHP.transform.localScale = new Vector3(0.5f,1f);
+		float HPrate;
+		float MPrate;
+
+		PlayerIndicator_playerName.text = this.name;
+		PlayerIndicatorHPtext.text = this.hp.ToString() + "/" + this.totalHP.ToString ();
+		PlayerIndicatorMPtext.text = this.skillPoint.ToString() + "/" + this.totalSkillPoint.ToString ();
+		HPrate = (float)hp / (float)totalHP;
+		MPrate = (float)skillPoint / (float)totalSkillPoint;
+		PlayerIndicatorHP.transform.localScale = new Vector3(HPrate,1f);
+		PlayerIndicatorMP.transform.localScale = new Vector3(MPrate,1f);
+
+		PlayerAvatar.sprite = Resources.Load<Sprite> (this.name + "Avatar");
+	}
 
 
 	// Update is called once per frame
 	protected void Update () {
-
+		
 		for (int i = bestPath.Count - 1; i >= 0; i--) {
 			if (Vector3.Distance (this.transform.position, MovingObjTransFromIntoWorldPos(bestPath [i])) >= float.Epsilon && movingToNum == i) {
 				//如果向近的地方移动就先增加order，远的地方就后改变

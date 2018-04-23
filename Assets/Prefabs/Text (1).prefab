@@ -60,7 +60,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Cleric
+  m_Text: Zombie
 --- !u!222 &222000718090774156
 CanvasRenderer:
   m_ObjectHideFlags: 1

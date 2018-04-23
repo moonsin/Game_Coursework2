@@ -231,6 +231,7 @@ public class TowerFightBoardManager : BoardManager {
 
 				if (fightOrderArray [0].tag == "Player") {
 					showTurnIndicator ("Player");
+					fightOrderArray [0].GetComponent<Player> ().updatePlayerIndicator ();
 					fightOrderArray [0].GetComponent<Player> ().OwnTurn = true;
 					fightOrderArray [0].GetComponent<Player> ().alreadyMoved = false;
 					fightOrderArray [0].GetComponent<Player> ().alreadyAttacked = false;

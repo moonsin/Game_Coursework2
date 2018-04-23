@@ -26,6 +26,10 @@ public class BoardManager : MonoBehaviour {
 	public Enemy infoEnemy;
 	public Player infoPlayer;
 
+	public GameObject skillIntroduction;
+	public Text skillIntroductionName;
+	public Text skillIntroductionContent;
+
 	public GameObject[,] TilesInstance;
 	protected int[,] playersPos;
 	protected int[,] enemiesPos;
@@ -47,6 +51,9 @@ public class BoardManager : MonoBehaviour {
 	public int CharacterOrderController = 0;
 	public bool MoveToNextCharacter = false;
 	public bool allEnemiesdied = false;
+
+	public GameObject SkillIndicator;
+	public Text SkillIndicatorText;
 
 	public GameObject EnemyInfo;
 
@@ -180,6 +187,15 @@ public class BoardManager : MonoBehaviour {
 		EnemyDEX = GameObject.Find ("EnemyDEX").GetComponent<Text>();
 		EnemyInfo.SetActive (false);
 
+		SkillIndicator = GameObject.Find ("SkillIndicator");
+		SkillIndicatorText = GameObject.Find ("SkillIndicatorText").GetComponent<Text> ();
+		SkillIndicator.SetActive (false);
+
+		skillIntroduction = GameObject.Find ("SkillIntroduction");
+		skillIntroductionName = GameObject.Find ("skillIntroductionName").GetComponent<Text>();
+		skillIntroductionContent = GameObject.Find ("skillIntroductionContent").GetComponent<Text>();
+		skillIntroduction.SetActive (false);
+
 	}
 
 	protected void initOrderArray(){
@@ -225,15 +241,21 @@ public class BoardManager : MonoBehaviour {
 	}
 
 	public void allButtonDisabled(){
+
 		MoveButton.instance.disable ();
 		RestButton.instance.disable ();
 		AttackButton.instance.disable ();
+		SkillButton.instance.disable ();
+		UseSkill.instance.disable ();
 	}
 
 	public void allButtonEnabled(){
+		
 		MoveButton.instance.enable ();
 		RestButton.instance.enable ();
 		AttackButton.instance.enable ();
+		SkillButton.instance.enable ();
+		UseSkill.instance.enable ();
 	}
 
 	public void SetOrderNames(RectTransform _mRect, RectTransform _parent,float height)
@@ -289,6 +311,7 @@ public class BoardManager : MonoBehaviour {
 		GameManager.instance.players = new List<Player> ();
 		GameManager.instance.enemies = new List<Enemy> ();
 		CharacterOrderController = 0;
+		SkillIndicator.SetActive (false);
 		orderNames = GameObject.FindGameObjectsWithTag ("orderInName");
 		for (int i = 0; i < orderNames.Length; i++) {
 			Destroy (orderNames [i]);
@@ -342,6 +365,16 @@ public class BoardManager : MonoBehaviour {
 		return new Player();
 	}
 
+	protected bool isSkillIndicator(Vector3 Pos){
+		Collider2D h = Physics2D.OverlapPoint (Pos);
+		if (h != null) {
+			if (h.tag == "skillButton") {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// Update is called once per frame
 	protected void Update () {
 
@@ -351,7 +384,7 @@ public class BoardManager : MonoBehaviour {
 			EnemyName.text = infoEnemy.name;
 			EnemyATK.text = "ATK: " +infoEnemy.attackPoint.ToString();
 			EnemyDEF.text = "DEF: " + infoEnemy.defendPoint.ToString();
-			EnemyHP.text = "HP: " + infoEnemy.hp.ToString();
+			EnemyHP.text = "HP: " + infoEnemy.hp.ToString() +"/" + infoEnemy.totalHP.ToString();
 			EnemyDEX.text = "DEX: " + infoEnemy.Dexterity.ToString();
 			EnemyInfo.SetActive (true);
 		} else if( infoPlayer ==null){
@@ -370,6 +403,19 @@ public class BoardManager : MonoBehaviour {
 		} else if(infoEnemy == null){
 			EnemyInfo.SetActive (false);
 		};
+
+
+		if (isSkillIndicator (Input.mousePosition)) {
+
+			skillIntroductionContent.text=
+				fightOrderArray [CharacterOrderController].GetComponent<Skills>().getIntroductionContent(fightOrderArray [CharacterOrderController].GetComponent<Player>().skillNames[0]);
+			skillIntroductionName.text = fightOrderArray [CharacterOrderController].GetComponent<Player> ().skillNames [0];
+			skillIntroduction.SetActive (true);
+			
+		}else{
+			skillIntroduction.SetActive (false);
+		}
+
 		
 		if (MoveToNextCharacter) {
 			MoveToNextCharacter = false;
@@ -393,12 +439,19 @@ public class BoardManager : MonoBehaviour {
 			if (fightOrderArray [CharacterOrderController].tag == "Player") {
 				showTurnIndicator ("Player");
 
+				if (fightOrderArray [CharacterOrderController].GetComponent<Player> ().skillPoint < fightOrderArray [CharacterOrderController].GetComponent<Player> ().totalSkillPoint) {
+					fightOrderArray [CharacterOrderController].GetComponent<Player> ().skillPoint += 1;
+				}
+
+				fightOrderArray [CharacterOrderController].GetComponent<Player> ().updatePlayerIndicator ();
 				fightOrderArray [CharacterOrderController].GetComponent<Player> ().OwnTurn = true;
 				fightOrderArray [CharacterOrderController].GetComponent<Player> ().alreadyMoved = false;
 				fightOrderArray [CharacterOrderController].GetComponent<Player> ().alreadyAttacked = false;
+
 				allButtonEnabled ();
 
 			} else {
+				
 				//showTurnIndicator ("Enemy");
 				fightOrderArray [CharacterOrderController].GetComponent<Enemy> ().run ();
 			}

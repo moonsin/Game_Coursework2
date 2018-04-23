@@ -22,7 +22,10 @@ public class AttackButton : ControlButton {
 
 		if (!disabled) {
 			player = BoardManager.instance.fightOrderArray[BoardManager.instance.CharacterOrderController].GetComponent<Player>();
+
 			player.deleteMoveRange ();
+			player.deleteSkillRange ();
+
 			if (!player.AttackRangeShowed) {
 				player.showAttackRange ();
 				player.AttackRangeShowed = true;

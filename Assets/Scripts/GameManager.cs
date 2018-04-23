@@ -10,7 +10,8 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance = null;
 	private startStoryManager startStoryScript;
 	private TowerFightManager towerFightScript;
-	public bool isTowerFight = true;
+	public bool isTowerFight = false;
+	public bool fighting = false;
 	public Canvas controlCanvas;
 
 	public List<Player> players;
@@ -30,7 +31,7 @@ public class GameManager : MonoBehaviour {
 
 		towerFightScript = GetComponent<TowerFightManager>();
 
-		//InitGame ();
+		InitGame ();
 	}
 
 
