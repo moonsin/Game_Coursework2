@@ -51,11 +51,15 @@ public class BoardManager : MonoBehaviour {
 	public int CharacterOrderController = 0;
 	public bool MoveToNextCharacter = false;
 	public bool allEnemiesdied = false;
+	public bool allPlayersdied = false;
 
 	public GameObject SkillIndicator;
 	public Text SkillIndicatorText;
 
 	public GameObject EnemyInfo;
+
+	public GameObject BE1;
+	public GameObject WE1;
 
 	public Vector3 TransFromWorldToISO(Vector3 vec){
 		Vector3 newVec = new Vector3();
@@ -306,6 +310,17 @@ public class BoardManager : MonoBehaviour {
 		allEnemiesdied = result;
 	}
 
+	public void checkAllplayerDied(){
+		bool result = true;
+
+		for (int i = 0; i < GameManager.instance.players.Count; i++) {
+			if (GameManager.instance.players [i] != null) {
+				result = false;
+			}
+		}
+		allPlayersdied = result;
+	}
+
 	protected void initBoard(){
 		GameObject[] orderNames;
 		GameManager.instance.players = new List<Player> ();
@@ -375,6 +390,8 @@ public class BoardManager : MonoBehaviour {
 		return false;
 	}
 
+
+
 	// Update is called once per frame
 	protected void Update () {
 
@@ -442,7 +459,7 @@ public class BoardManager : MonoBehaviour {
 				if (fightOrderArray [CharacterOrderController].GetComponent<Player> ().skillPoint < fightOrderArray [CharacterOrderController].GetComponent<Player> ().totalSkillPoint) {
 					fightOrderArray [CharacterOrderController].GetComponent<Player> ().skillPoint += 1;
 				}
-
+					
 				fightOrderArray [CharacterOrderController].GetComponent<Player> ().updatePlayerIndicator ();
 				fightOrderArray [CharacterOrderController].GetComponent<Player> ().OwnTurn = true;
 				fightOrderArray [CharacterOrderController].GetComponent<Player> ().alreadyMoved = false;

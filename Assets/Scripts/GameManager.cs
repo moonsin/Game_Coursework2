@@ -10,8 +10,14 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance = null;
 	private startStoryManager startStoryScript;
 	private TowerFightManager towerFightScript;
+	private ReadyFight readyFightScript;
+	private UnReadyFight unreadyFightScript;
+
 	public bool isTowerFight = false;
+	public bool isReadyFight = false;
+	public bool isUnReadyFight = false;
 	public bool fighting = false;
+
 	public Canvas controlCanvas;
 
 	public List<Player> players;
@@ -27,9 +33,14 @@ public class GameManager : MonoBehaviour {
 			Destroy (gameObject);
 		}
 		controlCanvas.enabled = false;
+
 		startStoryScript = GetComponent<startStoryManager>();
 
 		towerFightScript = GetComponent<TowerFightManager>();
+
+		readyFightScript = GetComponent<ReadyFight> ();
+
+		unreadyFightScript = GetComponent<UnReadyFight> ();
 
 		InitGame ();
 	}
@@ -59,6 +70,18 @@ public class GameManager : MonoBehaviour {
 			isTowerFight = false;
 			controlCanvas.enabled = true;
 			towerFightScript.SetupScene ();
+		}
+
+		if (isReadyFight) {
+			isReadyFight = false;
+			controlCanvas.enabled = true;
+			readyFightScript.SetupBoard ();
+		}
+
+		if (isUnReadyFight) {
+			isUnReadyFight = false;
+			controlCanvas.enabled = true;
+			unreadyFightScript.SetupBoard ();
 		}
 	}
 }

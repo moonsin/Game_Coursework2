@@ -1,0 +1,187 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class ReadyFight : BoardManager {
+
+	public GameObject[] firstFloorTiles;
+	public bool readyFightBegin = false;
+	public GameObject readyFightDialog;
+
+	private int floorNumber = 1;
+
+	int [,] firstFloormap = new int [8,8]{
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0}
+	};
+
+	int[,] firstFloorHeightMap = new int[8,8]{
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0}
+	};
+
+	int[] firstFloorPlayers = new int[]{0,1,2};
+	int[] firstFloorEnemies = new int[]{0,1};
+
+	GameObject[] firstFloorPlayersObj = new GameObject[3]; 
+	GameObject[] firstFloorEnemiesObj = new GameObject[2];
+
+
+	private void initFloorMoveableArray(int[,] HeightMap){
+		for (int y = 0; y < rows; y++) {
+			for (int x = 0; x < columns; x++) {
+				if (HeightMap [y, x] == 0) {
+					floorMoveableArray [y, x] = 1;
+				} else {
+					floorMoveableArray [y, x] = 0;
+				}
+			}
+		}
+	}
+
+	private void initFloorAttackAbleArray(int[,] HeightMap){
+		for (int y = 0; y < rows; y++) {
+			for (int x = 0; x < columns; x++) {
+				if (HeightMap [y, x] == 0) {
+					floorAttackAbleArray [y, x] = 1;
+				} else {
+					floorAttackAbleArray [y, x] = 0;
+				}
+			}
+		}
+	}
+
+	void Awake(){
+		
+	}
+
+	public void SetupBoard(){
+		
+		columns = 8;
+		rows = 8;
+
+		boardHolder = new GameObject ("Board").transform;
+		playersHolder = new GameObject ("Players").transform;
+		enemiesHolder = new GameObject ("Enemies").transform;
+
+		TilesInstance = new GameObject[8, 8];
+
+		playersPos = new int[3, 2]{ {7, 5},{7, 4},{7,1}};
+		enemiesPos = new int[2, 2]{ {1, 4},{1,5}};
+
+		floorMoveableArray = new int[8, 8];
+		floorAttackAbleArray = new int[8, 8];
+
+		initFloorMoveableArray (firstFloorHeightMap);
+		initFloorAttackAbleArray (firstFloorHeightMap);
+
+		fightPlayersIndex = firstFloorPlayers;
+		fightEnemiesIndex = firstFloorEnemies;
+
+		base.Awake ();
+
+
+		firstFloorSetup ();
+		for (int i = 0; i < firstFloorPlayers.Length; i++) {
+			firstFloorPlayersObj [i] = Players [firstFloorPlayers [i]];
+		}
+		for (int i = 0; i < firstFloorEnemies.Length; i++) {
+			firstFloorEnemiesObj [i] = Enemies [firstFloorEnemies [i]];
+		}
+		setCharacters (playersPos,firstFloorPlayersObj,0);
+		setCharacters (enemiesPos,firstFloorEnemiesObj,1);
+
+
+		showDialog ();
+
+
+	}
+
+	private void firstFloorSetup (){
+
+		int LayerOrder = 0;
+
+		for (int y = rows - 1; y >= 0; y--) {
+			for (int x = 0; x < columns; x++) {
+				GameObject toInstantiate = firstFloorTiles [firstFloormap[y,x]];
+
+				setFloor (toInstantiate, LayerOrder, x ,y,firstFloorHeightMap[y,x],0);
+
+				LayerOrder += 1;
+			}
+		}
+
+	}
+
+	private void showDialog (){
+
+		Instantiate (readyFightDialog);
+		//towerFightBegin = true;
+	}
+
+	protected void lose(){
+		Instantiate (BE1);
+	}
+	protected void win(){
+		Instantiate (WE1);
+	}
+		
+	
+	// Update is called once per frame
+	void Update () {
+		if (!readyFightBegin) {
+			return;
+		}
+
+		if (setCharactersFinished) {
+			setCharactersFinished = false;
+			initOrderArray ();
+			initOrderNames ();
+
+
+			if (fightOrderArray [0].tag == "Player") {
+				showTurnIndicator ("Player");
+				fightOrderArray [0].GetComponent<Player> ().updatePlayerIndicator ();
+				fightOrderArray [0].GetComponent<Player> ().OwnTurn = true;
+				fightOrderArray [0].GetComponent<Player> ().alreadyMoved = false;
+				fightOrderArray [0].GetComponent<Player> ().alreadyAttacked = false;
+				allButtonEnabled ();
+			} else {
+				allButtonDisabled ();
+				fightOrderArray [0].GetComponent<Enemy> ().run ();
+			}
+		}
+
+		checkAllenemieDied ();	
+		if (allEnemiesdied) {
+			readyFightBegin = false;
+			GameManager.instance.fighting = false;
+			TurnIndicator.text = "You Win!";
+			TurnIndicator.enabled = true;
+			Invoke ("win", 1.5f);
+		}
+		checkAllplayerDied ();
+
+		if (allPlayersdied && GameManager.instance.fighting) {
+			GameManager.instance.fighting = false;
+			TurnIndicator.text = "You lose!";
+			TurnIndicator.enabled = true;
+			Invoke ("lose", 1.5f);
+		}
+
+		base.Update ();
+	}
+}

@@ -19,25 +19,28 @@ public class backgroundStoryCanvas : MonoBehaviour {
 		
 		canvasHolder = this.transform;
 
-		instance = SetBlackBackgroundStory ();
+		//instance = SetBlackBackgroundStory ();
+
+		instance = Setbg1Story ();
 
 	}
 
-	GameObject SetBlackBackgroundStory(){
-
-		GameObject instance = Instantiate (blackbackground,canvasHolder) as GameObject;
+	GameObject SetBlackBackgroundStory(int i){
+		if (i == 1) {
+			instance = Instantiate (blackbackground, canvasHolder) as GameObject;
+		}
 
 		return instance;
 	}
 
 	GameObject Setbg1Story(){
-		GameObject instance = Instantiate (bg1,canvasHolder) as GameObject;
+		instance = Instantiate (bg1,canvasHolder) as GameObject;
 
 		return instance;
 	}
 
 	GameObject Setbg2Story(){
-		GameObject instance = Instantiate (bg2,canvasHolder) as GameObject;
+		instance = Instantiate (bg2,canvasHolder) as GameObject;
 
 		return instance;
 	}
@@ -46,7 +49,7 @@ public class backgroundStoryCanvas : MonoBehaviour {
 	void Update () {
 		if (instance == null) {
 			if (storyNum == 1) {
-				instance = Setbg1Story ();
+				instance = SetBlackBackgroundStory (1);
 				storyNum++;
 			}
 			else if (storyNum == 2) {

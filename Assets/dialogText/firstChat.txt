@@ -1,16 +1,16 @@
 Rapunzel: (scared)Who are you!? How did you find me ?
 Prince: Do not be afraid, my lady. I am a prince, obviously. I was wadering in the forest and came across your tower. Apologized for my disrespectful. By the way, who are you and why you are here?
-Rapunzel: I am Rapunzel,.However, I was kidnapped by an enchantress since I was born. It's a long story.
-Rapunzel told her story to the prince.
-Rapunzel: Can you take me away?
-Prince: Why not just walk away from the tower when the enchantress is not there.
-Rapunzel: Because in this tower is full of the enchantress's summoned monsters.
-Prince: Wow, that sounds dangerous. But out of love for you, I'm gald to help you,my princess. But,we need some plans in advance.
-Prince: firstly, I can take my friends here and ambush the enchantress tomorrow while she is away. After killing her, we can leave here with a rope.
+Rapunzel: I am Rapunzel, and I was kidnapped by an enchantress since I was born. It's a long story.
+Rapunzel told her story to the prince. She was taken away by the enchantress as exchange for her parents stolen the enchantress’s rampion.
+Rapunzel: Could you take me away?
+Prince: Why not just walk away from the tower when the enchantress is not here.
+Rapunzel: Because in this tower is full of the enchantress's summoned monsters, and I cannot jump from the window because it is too high.
+Prince: Wow, that sounds dangerous. But out of love for you, I'm gald to help you,my lady. However,we need some plans in advance.
+Prince: firstly, I can take my friends here and ambush the enchantress tomorrow while she is not here. After killing her, we can leave here with a rope.
 Prince: Second way is that I can kill all the monsters tomorrow and take you away while she is not here.
 Prince: Lastly, I can come here everyday, and bring a piece of silk, which you can gradually weave into a ladder. After finishing, I will take you away. However, this plan will take a long time.
 Prince: [question=0]So, Which one do you prefer?
 [choice]The next day, bring the guards to ambush and attack the enchantress.
 [choice]Defeat the monsters in the tower.
 [choice]Weave silk into a ladder.
-Prince: Ok, that's a good choice.
+Prince: Ok, that sounds like a good choice.

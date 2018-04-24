@@ -1815,22 +1815,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55a5d82b6ef2e4858a6fefe5e758f0c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackPoint: 0
-  Dexterity: 0
-  defendPoint: 0
-  hp: 0
+  attackPoint: 12
+  Dexterity: 7
+  defendPoint: 4
+  hp: 25
+  totalHP: 25
   MovingPoint: 0
-  AttackDisPoint: 0
+  AttackDisPoint: 3
   speed: 2
   manaPoint: 0
   skillPoint: 0
+  totalSkillPoint: 0
   FirstAttackPoint: 0
+  avatar: {fileID: 0}
+  CharacterClass: 0
+  skillNames: []
   damageIndicator: {fileID: 0}
+  characterIndicator: {fileID: 0}
+  PlayerIndicator: {fileID: 0}
+  PlayerIndicatorHP: {fileID: 0}
+  PlayerIndicatorMP: {fileID: 0}
+  PlayerIndicator_playerName: {fileID: 0}
+  PlayerIndicatorHPtext: {fileID: 0}
+  PlayerIndicatorMPtext: {fileID: 0}
+  PlayerAvatar: {fileID: 0}
   OwnTurn: 0
-  ObjGridVec: {x: 0, y: 0, z: 0}
+  ObjGridVec: {x: 1, y: 5, z: 0}
   moveRangeTile: {fileID: 0}
   MoveRangeShowed: 0
   attackRangeTile: {fileID: 0}
+  skillRangeTile: {fileID: 0}
   animator: {fileID: 0}
 --- !u!210 &210514886441746696
 SortingGroup:
@@ -1841,7 +1855,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 100
+  m_SortingOrder: 18
 --- !u!212 &212042720853213720
 SpriteRenderer:
   m_ObjectHideFlags: 1

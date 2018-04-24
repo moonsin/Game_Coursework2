@@ -85,7 +85,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac6e2f89379ac4e35847d99da36505a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstChat: {fileID: 1346804833424676, guid: 5237109268e514c848bb8b635255c8e7, type: 2}
+  firstChat: {fileID: 1111678557146004, guid: 5237109268e514c848bb8b635255c8e7, type: 2}
 --- !u!114 &114305117441847838
 MonoBehaviour:
   m_ObjectHideFlags: 1

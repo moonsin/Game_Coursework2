@@ -1,0 +1,5 @@
+Prince: I will not wait for death. Now, let me review some fight skills.
+Prince: In one battle, all roles and enemies will follow the order ranked by a random number based on Dexterity. 
+Prince: In each turn, the player can control the role to release ‘Move’ and ‘Attack’ or 'Move' and‘Skill’ once a time. Click ‘Rest’ to finish the role’s turn. 
+Prince: Oh, I almost forget it, each role gains 1 Skill Point after turn finished! This is important.
+Prince: this should be all, good luck.

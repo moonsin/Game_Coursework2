@@ -69,8 +69,8 @@ public class MovingObject : MonoBehaviour {
 		this.FirstAttackPoint = (int)Mathf.Floor (UnityEngine.Random.value* 10 + Dexterity);
 		animator = GetComponent<Animator>();
 
-		totalHP = hp;
-		totalSkillPoint = skillPoint;
+		//totalHP = hp;
+		//totalSkillPoint = skillPoint;
 
 		damageIndicator = GameObject.Find ("DamageIndicator").GetComponent<Text> ();
 		damageIndicator.enabled = false;

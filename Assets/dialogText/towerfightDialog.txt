@@ -1,0 +1,7 @@
+Prince: My best friends, beware of monsters summoned by the evil enchantress in this tower. Let's solve the poor Rapunzel!
+Mage: Yes, your highness. I will defeat all the enemies with my magic.
+Cleric: (samall) Well, then let me explain the rules of the game.
+Cleric: In one battle, all roles and enemies will follow the order ranked by a random number based on Dexterity. 
+Cleric: In each turn, the player can control the role to release ‘Move’ and ‘Attack’ or 'Move' and‘Skill’ once a time. Click ‘Rest’ to finish the role’s turn. 
+Cleric: Oh, I almost forget it, each role gains 1 Skill Point after turn finished! This is important.
+Cleric: this should be all, good luck, May the light with you.

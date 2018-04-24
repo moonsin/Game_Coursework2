@@ -306,7 +306,7 @@ Prefab:
         type: 2}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: f88cb468df5b66548b17c968cc93b6f9,
+      objectReference: {fileID: 21300000, guid: 5ab2a264a73d3438e8d3f9fd28a4d2c5,
         type: 3}
     - target: {fileID: 1202380925345112, guid: 73d07bee8a0076744b90a043d3def087, type: 2}
       propertyPath: m_Name
@@ -1641,6 +1641,8 @@ GameObject:
   - component: {fileID: 2010403302}
   - component: {fileID: 2010403303}
   - component: {fileID: 2010403304}
+  - component: {fileID: 2010403305}
+  - component: {fileID: 2010403306}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1660,6 +1662,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTowerFight: 0
+  isReadyFight: 0
+  isUnReadyFight: 0
   fighting: 0
   controlCanvas: {fileID: 646692978}
   players: []
@@ -1688,7 +1692,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb71c298e144043748dff4a604d61cf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startStoryCanvas: {fileID: 1050158868601394, guid: b827064a3cfe14bd48fc574bce4e4d8b,
+  startStoryCanvas: {fileID: 1057727172934978, guid: 1db36eca44c674be286494e9857b70d7,
     type: 2}
 --- !u!114 &2010403302
 MonoBehaviour:
@@ -1752,9 +1756,12 @@ MonoBehaviour:
   CharacterOrderController: 0
   MoveToNextCharacter: 0
   allEnemiesdied: 0
+  allPlayersdied: 0
   SkillIndicator: {fileID: 0}
   SkillIndicatorText: {fileID: 0}
   EnemyInfo: {fileID: 0}
+  BE1: {fileID: 1810938634115756, guid: fe9a8ec8f430e4db58970e90ee96bd71, type: 2}
+  WE1: {fileID: 1314626544382084, guid: 4bcc718ee7a4b414ca523dfcc0a8f022, type: 2}
   firstFloorTiles:
   - {fileID: 1942828989668894, guid: ec52ef3c68a2448d2a1c50b5f849f97a, type: 2}
   - {fileID: 1339647460306090, guid: 4826b8fcb712d4ee9ac49d5350677bd2, type: 2}
@@ -1763,11 +1770,14 @@ MonoBehaviour:
   - {fileID: 1053310698630930, guid: 2d5433311148f4d9aada148829b35212, type: 2}
   secondFloorTiles:
   - {fileID: 1422031216030106, guid: 105b39075dfc0db408f573a4c694bbfb, type: 2}
-  - {fileID: 1979844162756800, guid: c076d9af79004f8439e74005063077bd, type: 2}
+  - {fileID: 1139195529809550, guid: eb0a0a3936f814d9d8e8834f0441b9da, type: 2}
   - {fileID: 1827338648838382, guid: e884ff7d191c23a41b4410a9ac52a2b7, type: 2}
   thirdFloorTiles:
   - {fileID: 1218525589544478, guid: fd7ad8dfa9a2649bba8d37c5fda7a73b, type: 2}
-  - {fileID: 1410003243866680, guid: c285947ea1e7040b0b1baf5dc965434c, type: 2}
+  - {fileID: 1979844162756800, guid: c076d9af79004f8439e74005063077bd, type: 2}
+  towerFightBegin: 0
+  towerFightDialog: {fileID: 1651325729035468, guid: b38163a9c48b24cd38d07464b6b50f70,
+    type: 2}
 --- !u!114 &2010403304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1779,6 +1789,103 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3adcfefccbdf4584993c1927bbe42e87, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2010403305
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2010403298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d34139c3db884739b3503d40d478730, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  columns: 0
+  rows: 0
+  OrderNameText: {fileID: 1001521191003546, guid: a7c27df35b5e74c05a1d749b4156e057,
+    type: 2}
+  TurnIndicator: {fileID: 0}
+  EnemyName: {fileID: 0}
+  EnemyHP: {fileID: 0}
+  EnemyATK: {fileID: 0}
+  EnemyDEF: {fileID: 0}
+  EnemyDEX: {fileID: 0}
+  infoEnemy: {fileID: 0}
+  infoPlayer: {fileID: 0}
+  skillIntroduction: {fileID: 0}
+  skillIntroductionName: {fileID: 0}
+  skillIntroductionContent: {fileID: 0}
+  Players:
+  - {fileID: 1392192860370550, guid: 0d2c5d476cbd84b46a0710d23ddd8ac2, type: 2}
+  - {fileID: 1045502353946958, guid: 744ddd27a0fafe244aee5ce7ec1fb398, type: 2}
+  - {fileID: 1919814497670428, guid: d4d0f87b89ac07842a4d28f54da9be5b, type: 2}
+  Enemies:
+  - {fileID: 1182826058319734, guid: ce80465800c9943d6ad46232e8942526, type: 2}
+  - {fileID: 1432934587118966, guid: 400fbced4bad543d48437d9f820b99e2, type: 2}
+  fightPlayersIndex: 
+  fightEnemiesIndex: 
+  fightOrderArray: []
+  CharacterOrderController: 0
+  MoveToNextCharacter: 0
+  allEnemiesdied: 0
+  allPlayersdied: 0
+  SkillIndicator: {fileID: 0}
+  SkillIndicatorText: {fileID: 0}
+  EnemyInfo: {fileID: 0}
+  BE1: {fileID: 1810938634115756, guid: fe9a8ec8f430e4db58970e90ee96bd71, type: 2}
+  WE1: {fileID: 1314626544382084, guid: 4bcc718ee7a4b414ca523dfcc0a8f022, type: 2}
+  firstFloorTiles:
+  - {fileID: 1218525589544478, guid: fd7ad8dfa9a2649bba8d37c5fda7a73b, type: 2}
+  readyFightBegin: 0
+  readyFightDialog: {fileID: 1808093410495410, guid: 0ff38d03f99094823ac543f3f2d4b222,
+    type: 2}
+--- !u!114 &2010403306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2010403298}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e1d0f7a1768a42ada689ab32d05db02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  columns: 0
+  rows: 0
+  OrderNameText: {fileID: 1001521191003546, guid: a7c27df35b5e74c05a1d749b4156e057,
+    type: 2}
+  TurnIndicator: {fileID: 0}
+  EnemyName: {fileID: 0}
+  EnemyHP: {fileID: 0}
+  EnemyATK: {fileID: 0}
+  EnemyDEF: {fileID: 0}
+  EnemyDEX: {fileID: 0}
+  infoEnemy: {fileID: 0}
+  infoPlayer: {fileID: 0}
+  skillIntroduction: {fileID: 0}
+  skillIntroductionName: {fileID: 0}
+  skillIntroductionContent: {fileID: 0}
+  Players:
+  - {fileID: 1392192860370550, guid: 0d2c5d476cbd84b46a0710d23ddd8ac2, type: 2}
+  Enemies:
+  - {fileID: 1432934587118966, guid: 400fbced4bad543d48437d9f820b99e2, type: 2}
+  fightPlayersIndex: 
+  fightEnemiesIndex: 
+  fightOrderArray: []
+  CharacterOrderController: 0
+  MoveToNextCharacter: 0
+  allEnemiesdied: 0
+  allPlayersdied: 0
+  SkillIndicator: {fileID: 0}
+  SkillIndicatorText: {fileID: 0}
+  EnemyInfo: {fileID: 0}
+  BE1: {fileID: 1810938634115756, guid: fe9a8ec8f430e4db58970e90ee96bd71, type: 2}
+  WE1: {fileID: 1314626544382084, guid: 4bcc718ee7a4b414ca523dfcc0a8f022, type: 2}
+  firstFloorTiles:
+  - {fileID: 1218525589544478, guid: fd7ad8dfa9a2649bba8d37c5fda7a73b, type: 2}
+  unreadyFightBegin: 0
+  unreadyFightDialog: {fileID: 1372810653461778, guid: 7caa9c9eca65a40c98d767d0102996b3,
+    type: 2}
 --- !u!1 &2125354221
 GameObject:
   m_ObjectHideFlags: 0

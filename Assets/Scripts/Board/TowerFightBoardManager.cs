@@ -8,7 +8,8 @@ public class TowerFightBoardManager : BoardManager {
 	public GameObject[] firstFloorTiles;
 	public GameObject[] secondFloorTiles;
 	public GameObject[] thirdFloorTiles;
-	private bool towerFightBegin = false;
+	public bool towerFightBegin = false;
+	public GameObject towerFightDialog;
 
 	private int floorNumber = 1;
 
@@ -167,8 +168,16 @@ public class TowerFightBoardManager : BoardManager {
 		setCharacters (playersPos,firstFloorPlayersObj,0);
 		setCharacters (enemiesPos,firstFloorEnemiesObj,1);
 
-		towerFightBegin = true;
 
+		showDialog ();
+
+
+	}
+
+	private void showDialog (){
+
+		Instantiate (towerFightDialog);
+		//towerFightBegin = true;
 	}
 
 	private void firstFloorSetup (){
@@ -215,7 +224,12 @@ public class TowerFightBoardManager : BoardManager {
 		}
 	}
 
-
+	protected void lose(){
+		Instantiate (BE1);
+	}
+	protected void win(){
+		Instantiate (WE1);
+	}
 
 	// Update is called once per frame
 	void Update () {
@@ -332,7 +346,23 @@ public class TowerFightBoardManager : BoardManager {
 
 
 				}
+
+			if (floorNumber == 4) {
+					GameManager.instance.fighting = false;
+					TurnIndicator.text = "You Win!";
+					TurnIndicator.enabled = true;
+					Invoke ("win", 1.5f);
+				}
 			}
+
+		checkAllplayerDied ();
+
+		if (allPlayersdied && GameManager.instance.fighting) {
+			GameManager.instance.fighting = false;
+			TurnIndicator.text = "You lose!";
+			TurnIndicator.enabled = true;
+			Invoke ("lose", 1.5f);
+		}
 
 			base.Update ();
 

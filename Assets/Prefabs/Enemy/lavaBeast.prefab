@@ -1807,18 +1807,32 @@ MonoBehaviour:
   Dexterity: 7
   defendPoint: 4
   hp: 20
+  totalHP: 20
   MovingPoint: 0
   AttackDisPoint: 2
   speed: 2
   manaPoint: 0
   skillPoint: 0
+  totalSkillPoint: 0
   FirstAttackPoint: 0
+  avatar: {fileID: 0}
+  CharacterClass: 0
+  skillNames: []
   damageIndicator: {fileID: 0}
+  characterIndicator: {fileID: 0}
+  PlayerIndicator: {fileID: 0}
+  PlayerIndicatorHP: {fileID: 0}
+  PlayerIndicatorMP: {fileID: 0}
+  PlayerIndicator_playerName: {fileID: 0}
+  PlayerIndicatorHPtext: {fileID: 0}
+  PlayerIndicatorMPtext: {fileID: 0}
+  PlayerAvatar: {fileID: 0}
   OwnTurn: 0
-  ObjGridVec: {x: 0, y: 0, z: 0}
+  ObjGridVec: {x: 1, y: 4, z: 0}
   moveRangeTile: {fileID: 0}
   MoveRangeShowed: 0
   attackRangeTile: {fileID: 0}
+  skillRangeTile: {fileID: 0}
   animator: {fileID: 0}
 --- !u!114 &114292123006863368
 MonoBehaviour:
@@ -1841,7 +1855,7 @@ SortingGroup:
   m_Enabled: 1
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 100
+  m_SortingOrder: 26
 --- !u!212 &212008748329599704
 SpriteRenderer:
   m_ObjectHideFlags: 1

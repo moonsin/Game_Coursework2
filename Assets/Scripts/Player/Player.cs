@@ -18,6 +18,9 @@ public class Player : MovingObject {
 	public bool SkillRangeShowed = false;
 	public bool isCleave = false;
 
+	public bool usingSkill = false;
+	public string usingSkillName;
+
 	private bool EnemyKilled = false;
 
 
@@ -91,7 +94,15 @@ public class Player : MovingObject {
 		else 
 			return ( h.tag == "attackRange");
 	}
-		
+
+	private bool IsMouseOnSkillRange(Vector3 mousePos){
+		Collider2D h = Physics2D.OverlapPoint (mousePos);
+		if (h == null) {
+			return false;
+		}
+		else 
+			return ( h.tag == "skillRange");
+	}
 
 	public void showMoveRange(){
 		setMoveRange (Convert.ToInt32(ObjGridVec.x),Convert.ToInt32(ObjGridVec.y));
@@ -144,12 +155,15 @@ public class Player : MovingObject {
 					//print (GameManager.instance.enemies [BoardManager.instance.fightEnemiesIndex [i]]);
 					if (GameManager.instance.enemies [i] != null) {
 						if (GameManager.instance.enemies [i].ObjGridVec == AttackObjTransFromIntoGridPos (h.transform.position)) {
+
 							if (isCleave) {
-								skillPoint -= 2;
+								skillPoint -= 4;
 								updatePlayerIndicator ();
 							}
+
 							normalAttack (this.gameObject, GameManager.instance.enemies [i].gameObject);
 
+							UseSkill.instance.disable ();
 							AttackButton.instance.disable ();
 							alreadyAttacked = true;
 
@@ -158,8 +172,65 @@ public class Player : MovingObject {
 				}
 			}
 
+			if (Input.GetMouseButtonUp (0) && IsMouseOnSkillRange (clickPos)) {
+
+
+
+				Collider2D h = Physics2D.OverlapPoint (clickPos);
+				deleteSkillRange ();
+
+				if (usingSkillName == "Heal") {
+
+					for (int i = 0; i < GameManager.instance.players.Count; i++) {
+						if (GameManager.instance.players [i] != null) {
+							if (GameManager.instance.players [i].ObjGridVec == AttackObjTransFromIntoGridPos (h.transform.position)) {
+
+								this.animator.SetTrigger ("skill_2");
+								this.skillPoint -= 4;
+
+
+								GameManager.instance.players [i].hp += 9;
+								if (GameManager.instance.players [i].hp > GameManager.instance.players [i].totalHP) {
+									GameManager.instance.players [i].hp = GameManager.instance.players [i].totalHP;
+								}
+
+								updatePlayerIndicator ();
+								AttackButton.instance.disable ();
+								UseSkill.instance.disable ();
+
+							}
+						}
+					}
+
+				}
+
+
+				if (usingSkillName == "Blizzard") {
+
+						for (int i = 0; i < GameManager.instance.enemies.Count; i++) {
+							if (GameManager.instance.enemies [i] != null) {
+								if (GameManager.instance.enemies [i].ObjGridVec == AttackObjTransFromIntoGridPos (h.transform.position)) {
+
+									this.animator.SetTrigger ("skill_2");
+									this.skillPoint -= 4;
+									updatePlayerIndicator ();
+
+									GameManager.instance.enemies [i].GetComponent<Enemy> ().hit (10, 0);
+									AttackButton.instance.disable ();
+									UseSkill.instance.disable ();
+
+								}
+							}
+						}
+				
+				}
+			
+			
+			} 
+
+
 			if (isCleave) {
-				if (skillPoint < 2) {
+				if (skillPoint < 4) {
 					isCleave = false;
 				}
 				AttackButton.instance.enable ();

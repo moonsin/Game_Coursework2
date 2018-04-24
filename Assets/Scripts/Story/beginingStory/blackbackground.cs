@@ -22,7 +22,7 @@ public class blackbackground : MonoBehaviour {
 
 
 
-		Invoke ("showStory2", 8f);
+		Invoke ("showStory2", 3f);
 	}
 
 	void init(){
@@ -36,7 +36,7 @@ public class blackbackground : MonoBehaviour {
 		story1.enabled = false;
 		story2.enabled = true;
 
-		Invoke ("showStory3", 5f);
+		Invoke ("showStory3", 7f);
 
 	}
 
@@ -45,7 +45,7 @@ public class blackbackground : MonoBehaviour {
 		story2.enabled = false;
 		story3.enabled = true;
 
-		Invoke ("BlackBackgroundFinished", 8f);
+		Invoke ("BlackBackgroundFinished", 3f);
 	}
 
 	void BlackBackgroundFinished(){

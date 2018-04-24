@@ -16,8 +16,10 @@ public class BE1finished : MonoBehaviour {
 	void finished(){
 
 		title.GetComponent<Text> ().enabled = true;
-		Ghost.GetComponent<Image> ().enabled = true;
-		Ghost.GetComponent<Animator> ().enabled = true;
+		if (Ghost != null) {
+			Ghost.GetComponent<Image> ().enabled = true;
+			Ghost.GetComponent<Animator> ().enabled = true;
+		}
 	} 
 
 	// Update is called once per frame

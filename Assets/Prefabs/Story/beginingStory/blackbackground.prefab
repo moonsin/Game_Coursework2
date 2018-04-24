@@ -162,10 +162,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.5
-  m_Text: 'Rapunzel grew into the most beautiful child under the sun. When she was
-    twelve years old, the enchantress shut her into a tower, which lay in a forest,
-    and had neither stairs nor door, but quite at the top was a little window. When
-    the enchantress wanted to go in, she placed herself beneath it and cried:'
+  m_Text: " \u2018Rapunzel, Rapunzel,Let down your hair to me.\u2019 "
 --- !u!114 &114650119934645156
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -212,7 +209,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.5
-  m_Text: " \u2018Rapunzel, Rapunzel,\n\t  Let down your hair to me.\u2019 "
+  m_Text: "He saw that braids of golden hari was let down, and the enchantress climbed
+    up.\n\u2018If that is the ladder by which one mounts, I too will try my fortune,\u2019
+    said he.\nThe next day when it began to grow dark, he went to the tower and cried:\n"
 --- !u!114 &114979134447269080
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -272,10 +271,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1.5
-  m_Text: Rapunzel had magnificent long hair, fine as spun gold, and when she heard
-    the voice of the enchantress she unfastened her braided tresses, wound them round
-    one of the hooks of the window above, and then the hair fell twenty ells down,
-    and the enchantress climbed up by it.
+  m_Text: "\u2018Rapunzel, Rapunzel,Let down your hair to me.\u2019"
 --- !u!222 &222745111131447434
 CanvasRenderer:
   m_ObjectHideFlags: 1

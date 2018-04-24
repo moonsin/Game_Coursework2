@@ -4,8 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class Skills : MonoBehaviour {
-	public bool usingSkill = false;
-	public string usingSkillName;
+
 	private Vector3 clickPos;
 	private GameObject Skilluser;
 
@@ -20,10 +19,10 @@ public class Skills : MonoBehaviour {
 	public int getCost(string Name){
 
 		if (Name == "Heal") {
-			return 3;
+			return 4;
 		}
 		if (Name == "Cleave") {
-			return 3;
+			return 4;
 		}
 		if (Name == "Blizzard") {
 			return 4;
@@ -65,8 +64,8 @@ public class Skills : MonoBehaviour {
 
 				playerUser.showSkillRange ();
 				Skilluser = user;
-				usingSkillName = "Heal";
-				usingSkill = true;
+				user.GetComponent<Player>().usingSkillName = "Heal";
+				user.GetComponent<Player>().usingSkill = true;
 			} else {
 				playerUser.deleteSkillRange ();
 				playerUser.SkillRangeShowed = false;
@@ -93,8 +92,8 @@ public class Skills : MonoBehaviour {
 
 				playerUser.showSkillRange ();
 				Skilluser = user;
-				usingSkillName = "Blizzard";
-				usingSkill = true;
+				user.GetComponent<Player>().usingSkillName = "Blizzard";
+				user.GetComponent<Player>().usingSkill = true;
 			} else {
 				playerUser.deleteSkillRange ();
 				playerUser.SkillRangeShowed = false;
@@ -104,14 +103,7 @@ public class Skills : MonoBehaviour {
 		return true;
 	}
 
-	private bool IsMouseOnSkillRange(Vector3 mousePos){
-		Collider2D h = Physics2D.OverlapPoint (mousePos);
-		if (h == null) {
-			return false;
-		}
-		else 
-			return ( h.tag == "skillRange");
-	}
+
 
 	// Use this for initialization
 	void Start () {
@@ -120,63 +112,7 @@ public class Skills : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		if (usingSkill) {
-			clickPos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 
-
-			if (usingSkillName == "Heal") {
-				if (Input.GetMouseButtonUp (0) && IsMouseOnSkillRange (clickPos)) {
-					Collider2D h = Physics2D.OverlapPoint (clickPos);
-					Skilluser.GetComponent<Player> ().deleteSkillRange ();
-
-					for (int i = 0; i < GameManager.instance.players.Count; i++) {
-						if (GameManager.instance.players [i] != null) {
-							if (GameManager.instance.players [i].ObjGridVec == Skilluser.GetComponent<Player>().AttackObjTransFromIntoGridPos (h.transform.position)) {
-
-								Skilluser.GetComponent<Player> ().animator.SetTrigger ("skill_2");
-								Skilluser.GetComponent<Player> ().skillPoint -= 2;
-								Skilluser.GetComponent<Player> ().updatePlayerIndicator ();
-
-								GameManager.instance.players [i].hp += 9;
-								if (GameManager.instance.players [i].hp > GameManager.instance.players [i].totalHP) {
-									GameManager.instance.players [i].hp = GameManager.instance.players [i].totalHP;
-								}
-								UseSkill.instance.disable ();
-
-							}
-						}
-					}
-				} 
-			}
-
-
-			if (usingSkillName == "Blizzard") {
-				if (Input.GetMouseButtonUp (0) && IsMouseOnSkillRange (clickPos)) {
-					Collider2D h = Physics2D.OverlapPoint (clickPos);
-					Skilluser.GetComponent<Player> ().deleteSkillRange ();
-
-					for (int i = 0; i < GameManager.instance.enemies.Count; i++) {
-						if (GameManager.instance.enemies [i] != null) {
-							if (GameManager.instance.enemies [i].ObjGridVec == Skilluser.GetComponent<Player>().AttackObjTransFromIntoGridPos (h.transform.position)) {
-
-								Skilluser.GetComponent<Player> ().animator.SetTrigger ("skill_2");
-								Skilluser.GetComponent<Player> ().skillPoint -= 4;
-								Skilluser.GetComponent<Player> ().updatePlayerIndicator ();
-
-								GameManager.instance.enemies [i].GetComponent<Enemy> ().hit (10, 0);
-								
-								UseSkill.instance.disable ();
-
-							}
-						}
-					}
-				}
-			
-			}
-
-
-		}
 	}
 
 }
